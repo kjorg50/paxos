@@ -15,6 +15,14 @@ public class Main {
 
     public static void main(String[] args) {
 
+        int node;
+        if(args.length == 2){
+            node = Integer.parseInt(args[1]);
+            System.out.println("Setting up node: " + node);
+        } else{
+            System.out.println("Usage:  java -cp target/paxos-0.0.1.jar edu.ucsb.cs.Main <NODENUM>");
+        }
+
         System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5 \n");
         Scanner sc = new Scanner(System.in);
 

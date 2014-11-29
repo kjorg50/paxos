@@ -5,4 +5,4 @@ Implementing a bank account management system that is replicated to many sites u
 ## Usage
 1. `mvn compile`
 2. `mvn package`
-3. `java -cp target/paxos-1.0-SNAPSHOT.jar edu.ucsb.cs.Main`
+3. `java -cp target/paxos-0.0.1.jar edu.ucsb.cs.Main`
