@@ -76,7 +76,7 @@ public class PracticalAcceptorImpl extends EssentialAcceptorImpl implements Prac
 		}
 	}
 	
-	// send any pending 
+	// send any pending values if active
 	@Override
 	public void persisted() {
 		if (active) {
