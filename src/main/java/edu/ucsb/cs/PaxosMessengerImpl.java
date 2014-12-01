@@ -9,6 +9,9 @@ import cocagne.paxos.functional.HeartbeatMessenger;
  */
 public class PaxosMessengerImpl implements HeartbeatMessenger{
 
+    // TODO - read from file to determine what nodes to talk to
+    // maybe use an ArrayList to store them?
+    
     /* -----------------------------------------------
      *                   Essential
      * -----------------------------------------------
