@@ -13,16 +13,20 @@ public class Main {
     public static final int FAIL = 4;
     public static final int UNFAIL = 5;
 
+    public static PaxosHandler handler;
+
     public static void main(String[] args) {
 
-        int node;
-        if(args.length == 2){
-            node = Integer.parseInt(args[1]);
+        int node=0;
+        if(args.length == 1){
+            node = Integer.parseInt(args[0]);
             System.out.println("Setting up node: " + node);
         } else{
             System.out.println("Usage:  java -cp target/paxos-0.0.1.jar edu.ucsb.cs.Main <NODENUM>");
+            System.exit(1);
         }
 
+        handler = new PaxosHandler(node);
         System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5 \n");
         Scanner sc = new Scanner(System.in);
 
@@ -37,7 +41,7 @@ public class Main {
                         if (sc.hasNextDouble()) {
                             Double amount = sc.nextDouble();
                             System.out.println("Depositing " + amount);
-                            // TODO
+                            handler.deposit(amount);
                             System.out.println(amount + " deposited");
                         } else {
                             System.out.println("Please behave.");
@@ -49,7 +53,7 @@ public class Main {
                         if (sc.hasNextDouble()) {
                             Double amount = sc.nextDouble();
                             System.out.println("Withdrawing " + amount);
-                            // TODO
+                            handler.withdraw(amount);
                             System.out.println(amount + " withdrawn");
                         } else {
                             System.out.println("Please behave.");
@@ -57,13 +61,14 @@ public class Main {
                         }
                         break;
                     case BALANCE:
-                        System.out.println("Your account balance is $<amount>");
-                        // TODO check balance
+                        System.out.printf("Your account balance is $%.2f\n", handler.getBalance() );
                         break;
                     case FAIL:
+                        handler.fail();
                         System.out.println("Failure ON");
                         break;
                     case UNFAIL:
+                        handler.unfail();
                         System.out.println("Failure OFF");
                         break;
                     default:
