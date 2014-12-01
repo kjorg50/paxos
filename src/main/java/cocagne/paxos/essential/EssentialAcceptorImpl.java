@@ -1,5 +1,7 @@
 package cocagne.paxos.essential;
-
+/**
+ * Based on the code from https://github.com/cocagne/paxos
+ */
 
 public class EssentialAcceptorImpl implements EssentialAcceptor {
 	

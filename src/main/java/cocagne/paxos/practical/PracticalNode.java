@@ -1,4 +1,7 @@
 package cocagne.paxos.practical;
+/**
+ * Based on the code from https://github.com/cocagne/paxos
+ */
 
 import cocagne.paxos.essential.EssentialLearner;
 import cocagne.paxos.essential.EssentialLearnerImpl;

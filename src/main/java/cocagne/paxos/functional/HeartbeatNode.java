@@ -1,4 +1,7 @@
 package cocagne.paxos.functional;
+/**
+ * Based on the code from https://github.com/cocagne/paxos
+ */
 
 import java.util.HashSet;
 

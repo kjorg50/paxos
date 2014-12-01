@@ -1,7 +1,8 @@
 
 package cocagne.paxos.essential;
-
-
+/**
+ * Based on the code from https://github.com/cocagne/paxos
+ */
 
 public interface EssentialMessenger {
 

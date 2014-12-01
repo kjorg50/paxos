@@ -1,4 +1,7 @@
 package cocagne.paxos.practical;
+/**
+ * Based on the code from https://github.com/cocagne/paxos
+ */
 
 import cocagne.paxos.essential.EssentialProposer;
 import cocagne.paxos.essential.ProposalID;
