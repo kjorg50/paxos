@@ -1,6 +1,8 @@
 package edu.ucsb.cs;
 
 import java.util.Scanner;
+import org.apache.log4j.Logger;
+import org.apache.log4j.BasicConfigurator;
 
 /**
  * Main class of our Paxos implementation. Handles the command line interaction with the user.
@@ -12,7 +14,9 @@ public class Main {
     public static final int BALANCE = 3;
     public static final int FAIL = 4;
     public static final int UNFAIL = 5;
+    public static int node;
 
+    static Logger logger = Logger.getLogger(Main.class);
     public static PaxosHandler handler;
 
     public static void main(String[] args) {
@@ -40,9 +44,9 @@ public class Main {
                         System.out.println("Type amount to deposit:");
                         if (sc.hasNextDouble()) {
                             Double amount = sc.nextDouble();
-                            System.out.println("Depositing " + amount);
+                            logger.info("Depositing " + amount);
                             handler.deposit(amount);
-                            System.out.println(amount + " deposited");
+                            logger.info(amount + " deposited");
                         } else {
                             System.out.println("Please behave.");
                             sc.next();
@@ -52,9 +56,9 @@ public class Main {
                         System.out.println("Type amount to withdraw:");
                         if (sc.hasNextDouble()) {
                             Double amount = sc.nextDouble();
-                            System.out.println("Withdrawing " + amount);
+                            logger.info("Withdrawing " + amount);
                             handler.withdraw(amount);
-                            System.out.println(amount + " withdrawn");
+                            logger.info(amount + " withdrawn");
                         } else {
                             System.out.println("Please behave.");
                             sc.next();
