@@ -17,10 +17,11 @@ public class EssentialAcceptorImpl implements EssentialAcceptor {
 	@Override
 	public void receivePrepare(String fromUID, ProposalID proposalID) {
 		
-		if (this.promisedID != null && proposalID.equals(promisedID)) { // duplicate message
+		if (this.promisedID != null && proposalID.equals(promisedID)) { // duplicate message, I already promised to this proposal
 			messenger.sendPromise(fromUID, proposalID, acceptedID, acceptedValue);
 		}
-		else if (this.promisedID == null || proposalID.isGreaterThan(promisedID)) {
+		else if (this.promisedID == null || proposalID.isGreaterThan(promisedID)) { // first proposal, or newer proposal
+																					// promise to this Prepare
 			promisedID = proposalID;
 			messenger.sendPromise(fromUID, proposalID, acceptedID, acceptedValue);
 		}

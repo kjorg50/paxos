@@ -20,7 +20,8 @@ public class PracticalProposerImpl extends EssentialProposerImpl implements Prac
 	public void setProposal(Object value) {
 		if ( proposedValue == null ) {
 			proposedValue = value;
-			
+
+			// if leader, skip the prepare phase
 			if (leader && active)
 				messenger.sendAccept(proposalID, proposedValue);
 		}
@@ -102,7 +103,8 @@ public class PracticalProposerImpl extends EssentialProposerImpl implements Prac
         	if (prevAcceptedValue != null)
         		proposedValue = prevAcceptedValue;
         }
-        
+
+		// If we have a majority, become the leader and start the accept phase
         if (promisesReceived.size() == quorumSize) {
         	leader = true;
         	((PracticalMessenger)messenger).onLeadershipAcquired();
