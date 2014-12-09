@@ -2,7 +2,6 @@ package edu.ucsb.cs;
 
 import java.util.Scanner;
 import org.apache.log4j.Logger;
-import org.apache.log4j.BasicConfigurator;
 
 /**
  * Main class of our Paxos implementation. Handles the command line interaction with the user.
@@ -17,6 +16,7 @@ public class Main {
     public static int node;
 
     static Logger logger = Logger.getLogger(Main.class);
+    //final static org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class);
     public static PaxosHandler handler;
 
     public static void main(String[] args) {
