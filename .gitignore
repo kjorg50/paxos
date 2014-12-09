@@ -13,3 +13,5 @@ target/
 
 # EC2
 *.cer
+
+*.DS_Store
