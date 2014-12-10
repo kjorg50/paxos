@@ -114,6 +114,10 @@ public class PracticalNode implements PracticalProposer, PracticalAcceptor, Esse
 	public void receivePromise(String fromUID, ProposalID proposalID,
 			ProposalID prevAcceptedID, Object prevAcceptedValue) {
 		proposer.receivePromise(fromUID, proposalID, prevAcceptedID, prevAcceptedValue);
+		if (acceptor.persistenceRequired()){
+			acceptor.persisted();
+		}
+
 	}
 	
 	public PracticalMessenger getMessenger() {

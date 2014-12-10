@@ -39,8 +39,6 @@ public class Main {
 
         ThriftServer.startThriftServer(heartbeatNode);
 
-        deposit(123);
-
         System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5 \n");
         Scanner sc = new Scanner(System.in);
 
