@@ -2,13 +2,15 @@ namespace java edu.ucsb.cs.thrift
 
 typedef i64 int
 
+struct ProposalID{
+    1:int ballotNumber,
+    2:string uid
+}
+
 service Ballot {
 
     /** ProposalID == (int ballotNumber, string uid) **/
-    struct ProposalID{
-    1:int ballotNumber,
-    2:string uid
-    }
+
 
     /* Prepare
      * 1. my node ID
@@ -27,20 +29,20 @@ service Ballot {
     /* Accept
      *
      */
-    oneway void accept(1:string myId, 2:Proposal propID, 3:int acceptedValue)
+    oneway void accept(1:string myId, 2:ProposalID propID, 3:int acceptedValue)
 
     /* Accepted
      *
      */
-    oneway void accepted(1:string myId, 2:Proposal propID, 3:int acceptedValue)
+    oneway void accepted(1:string myId, 2:ProposalID propID, 3:int acceptedValue)
 
 	// if accepted received from majority => onResolution
-    oneway void decide(1:Proposal propID, 2:int value)
+    oneway void decide(1:ProposalID propID, 2:int value)
 
-    oneway void prepareNACK(1:string myId, 2:Proposal propID, 3:Proposal promisedID)
-    oneway void acceptNACK(1:string myId, 2:Proposal propID, 3:Proposal promisedID)
+    oneway void prepareNACK(1:string myId, 2:ProposalID propID, 3:ProposalID promisedID)
+    oneway void acceptNACK(1:string myId, 2:ProposalID propID, 3:ProposalID promisedID)
 
-    oneway void heartbeat(1:string myId, 2:Proposal leaderPropID)
+    oneway void heartbeat(1:string myId, 2:ProposalID leaderPropID)
 
     list<int> update(1:int lastAcceptedBallot)
 }

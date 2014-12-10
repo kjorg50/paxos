@@ -44,10 +44,6 @@ public class ThriftClient {
             Ballot.Client client = new Ballot.Client(protocol);
 
             //client.isLeader();
-            //System.out.println("isLeader()" +  client.isLeader());
-
-            client.decide(1L,2L);
-            System.out.println("decide() called");
 
             transport.close();
         } catch (TException x) {

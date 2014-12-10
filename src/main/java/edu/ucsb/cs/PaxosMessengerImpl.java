@@ -118,41 +118,53 @@ public class PaxosMessengerImpl implements HeartbeatMessenger, Ballot.Iface{
 
     /*
         ==============================================================
-
+        Thrift methods' implementation
+        ==============================================================
      */
 
+
     @Override
-    public void prepare(long ballotNumber, long myId) throws TException {
+    public void prepare(String myId, edu.ucsb.cs.thrift.ProposalID propID) throws TException {
 
     }
 
     @Override
-    public void ack(long ballotNumber, long acceptedNumber, long acceptedVal) throws TException {
+    public void promise(String myId, edu.ucsb.cs.thrift.ProposalID propID, edu.ucsb.cs.thrift.ProposalID prevPropId, long acceptedValue) throws TException {
 
     }
 
     @Override
-    public void accept(long ballotNumber, long leaderVal) throws TException {
+    public void accept(String myId, edu.ucsb.cs.thrift.ProposalID propID, long acceptedValue) throws TException {
 
     }
 
     @Override
-    public void accepted(long ballotNumber, long val) throws TException {
+    public void accepted(String myId, edu.ucsb.cs.thrift.ProposalID propID, long acceptedValue) throws TException {
 
     }
 
     @Override
-    public void decide(long ballotNumber, long value) throws TException {
-        System.out.println("In decide(): ballot " + ballotNumber + " value " + value);
+    public void decide(edu.ucsb.cs.thrift.ProposalID propID, long value) throws TException {
+
+    }
+
+    @Override
+    public void prepareNACK(String myId, edu.ucsb.cs.thrift.ProposalID propID, edu.ucsb.cs.thrift.ProposalID promisedID) throws TException {
+
+    }
+
+    @Override
+    public void acceptNACK(String myId, edu.ucsb.cs.thrift.ProposalID propID, edu.ucsb.cs.thrift.ProposalID promisedID) throws TException {
+
+    }
+
+    @Override
+    public void heartbeat(String myId, edu.ucsb.cs.thrift.ProposalID leaderPropID) throws TException {
+
     }
 
     @Override
     public List<Long> update(long lastAcceptedBallot) throws TException {
         return null;
-    }
-
-    @Override
-    public boolean isLeader() throws TException {
-        return false;
     }
 }
