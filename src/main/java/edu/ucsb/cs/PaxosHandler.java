@@ -26,33 +26,35 @@ public class PaxosHandler {
     public PaxosHandler(int num){
         nodeNum = num;
         nodeUID = "node"+nodeNum;
-        messenger = new PaxosMessengerImpl(nodeUID, this);
+        messenger = new PaxosMessengerImpl(nodeUID);
         node = new HeartbeatNode(messenger,nodeUID,MAJORITY,null,1000,5000);
         transactions = new Stack<Transaction>();
         balance = 0.0;
-
-        ThriftServer.startThriftServer(nodeUID);
     }
 
+//    public void startThrift(){
+//        ThriftServer.startThriftServer(this);
+//    }
+
     public void deposit(double amount){
-//        Transaction newTxn;
-//        if(transactions.empty()) {
-//            newTxn = new Transaction(0.0, amount);
-//        } else {
-//            Double prev = transactions.peek().getAmount();
-//            newTxn = new Transaction(prev, prev+amount);
-//        }
-//        node.setProposal(newTxn);
-//        node.prepare(); // run paxos
-//
-//        while(!node.isComplete()){
-//            // timeout after certain amount?
-//            if(node.isComplete())
-//                break;
-//        }
-//        Transaction result = (Transaction)node.getFinalValue();
-//
-//        transactions.add(result);
+        Transaction newTxn;
+        if(transactions.empty()) {
+            newTxn = new Transaction(0.0, amount);
+        } else {
+            Double prev = transactions.peek().getAmount();
+            newTxn = new Transaction(prev, prev+amount);
+        }
+        node.setProposal(newTxn);
+        node.prepare(); // run paxos
+
+        while(!node.isComplete()){
+            // timeout after certain amount?
+            if(node.isComplete())
+                break;
+        }
+        Transaction result = (Transaction)node.getFinalValue();
+
+        transactions.add(result);
 
         ThriftClient.callClient();
         // TODO - add logging

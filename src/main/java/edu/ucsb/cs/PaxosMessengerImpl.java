@@ -19,16 +19,14 @@ import org.apache.thrift.transport.TTransport;
 /**
  * This class will handle the messaging between different nodes in the system
  */
-public class PaxosMessengerImpl implements HeartbeatMessenger, Ballot.Iface{
+public class PaxosMessengerImpl implements HeartbeatMessenger {
 
     private String nodeUID;
     private MessengerConf conf;
-    private PaxosHandler handler;
 
-    public PaxosMessengerImpl(String id, PaxosHandler _handler){
+    public PaxosMessengerImpl(String id){
         this.nodeUID = id;
         conf = new MessengerConf();
-        this.handler = _handler;
     }
 
     public String getNodeUID(){ return nodeUID;
@@ -48,15 +46,18 @@ public class PaxosMessengerImpl implements HeartbeatMessenger, Ballot.Iface{
 
             try {
                 TTransport transport;
+                System.out.println("*** "+m.getAddress());
                 transport = new TSocket(m.getAddress(), m.getPort());
                 transport.open();
 
-
+                System.out.println("*** Before thrift client creation");
                 TProtocol protocol = new TBinaryProtocol(transport);
                 Ballot.Client client = new Ballot.Client(protocol);
 
+                System.out.println("*** After thrift client creation, before prepare sent");
                 client.prepare(nodeUID,new ThriftProposalID(proposalID.getNumber(),proposalID.getUID()));
 
+                System.out.println("*** After prepare sent by Thrift ");
                 transport.close();
             } catch (TException x) {
                 x.printStackTrace();
@@ -140,58 +141,6 @@ public class PaxosMessengerImpl implements HeartbeatMessenger, Ballot.Iface{
 
     public void onLeadershipChange(String previousLeaderUID, String newLeaderUID){
         // record in log the change in leadership
-    }
-
-     /*
-        ==============================================================
-        Thrift methods' implementation
-        ==============================================================
-     */
-
-    @Override
-    public void prepare(String myId, ThriftProposalID propID) throws TException {
-        System.out.println("*** I have received a prepare request (in Thrift)" );
-        handler.getNode().receivePrepare(myId, new ProposalID((int)propID.getBallotNumber(),propID.getUid()) );
-    }
-
-    @Override
-    public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, long acceptedValue) throws TException {
-
-    }
-
-    @Override
-    public void accept(String myId, ThriftProposalID propID, long acceptedValue) throws TException {
-
-    }
-
-    @Override
-    public void accepted(String myId, ThriftProposalID propID, long acceptedValue) throws TException {
-
-    }
-
-    @Override
-    public void decide(ThriftProposalID propID, long value) throws TException {
-
-    }
-
-    @Override
-    public void prepareNACK(String myId, ThriftProposalID propID, ThriftProposalID promisedID) throws TException {
-
-    }
-
-    @Override
-    public void acceptNACK(String myId, ThriftProposalID propID, ThriftProposalID promisedID) throws TException {
-
-    }
-
-    @Override
-    public void heartbeat(String myId, ThriftProposalID leaderPropID) throws TException {
-
-    }
-
-    @Override
-    public List<Long> update(long lastAcceptedBallot) throws TException {
-        return null;
     }
 
 }

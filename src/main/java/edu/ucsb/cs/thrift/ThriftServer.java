@@ -24,6 +24,8 @@ package edu.ucsb.cs.thrift;
  * under the License.
  */
 
+import cocagne.paxos.functional.HeartbeatNode;
+import edu.ucsb.cs.PaxosHandler;
 import edu.ucsb.cs.PaxosMessengerImpl;
 import org.apache.thrift.server.TServer;
         import org.apache.thrift.server.TServer.Args;
@@ -37,13 +39,13 @@ import org.apache.thrift.transport.TTransportException;
 
 public class ThriftServer {
 
-    public static PaxosMessengerImpl handler;
+    public static BallotHandler handler;
 
     public static Ballot.Processor processor;
 
-    public static void startThriftServer(String nodeUID) {
+    public static void startThriftServer(HeartbeatNode heartbeatNode) {
         try {
-            handler = new PaxosMessengerImpl(nodeUID);
+            handler = new BallotHandler(heartbeatNode);
             processor = new Ballot.Processor(handler);
 
             Runnable simple = new Runnable() {
