@@ -31,11 +31,8 @@ package edu.ucsb.cs.thrift;
         import org.apache.thrift.protocol.TProtocol;
 
 public class ThriftClient {
-
-
+    
     public static void callClient() {
-
-
 
         try {
             TTransport transport;
@@ -46,58 +43,15 @@ public class ThriftClient {
             TProtocol protocol = new  TBinaryProtocol(transport);
             Ballot.Client client = new Ballot.Client(protocol);
 
-            // perform(client);
-
-            client.isLeader();
-            System.out.println("isLeader()" +  client.isLeader());
-
-
-            transport.close();
-        } catch (TException x) {
-            x.printStackTrace();
-        }
-    }
-
-    public static void main(String [] args) {
-
-
-
-        try {
-            TTransport transport;
-                transport = new TSocket("localhost", 9090);
-                transport.open();
-
-
-            TProtocol protocol = new  TBinaryProtocol(transport);
-            Ballot.Client client = new Ballot.Client(protocol);
-
-           // perform(client);
-
             //client.isLeader();
+            //System.out.println("isLeader()" +  client.isLeader());
+
             client.decide(1L,2L);
             System.out.println("decide() called");
 
-
             transport.close();
         } catch (TException x) {
             x.printStackTrace();
         }
-    }
-
-    private static void perform(Ballot.Client client) throws TException
-    {
-//        client.ping();
-//        System.out.println("ping()");
-//
-//        int sum = client.add(1,1);
-//        System.out.println("1+1=" + sum);
-//
-        client.isLeader();
-        System.out.println("isLeader()" +  client.isLeader());
-
-
-
-        //SharedStruct log = client.getStruct(1);
-
     }
 }
