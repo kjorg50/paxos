@@ -60,8 +60,11 @@ public class HeartbeatNode extends PracticalNode {
 
 	@Override
 	public void prepare(boolean incrementProposalNumber) {
-		if (incrementProposalNumber) // if we want to start a new election, clear out old NACKs
+		System.out.println("HeartbeatNode: prepare" + incrementProposalNumber);
+		if (incrementProposalNumber) { // if we want to start a new election, clear out old NACKs
 			acceptNACKs.clear();
+			System.out.println("HeartbeatNode: prepare incrementProposalNumber");
+		}
 		super.prepare(incrementProposalNumber);
 	}
 	
@@ -130,8 +133,11 @@ public class HeartbeatNode extends PracticalNode {
 	
 	@Override
 	public void receivePrepare(String fromUID, ProposalID proposalID) {
+		System.out.println("HeartbeatNode: prepare fromUID  proposalID.getUID()  proposalID.getNumber" + fromUID + proposalID.getUID() + proposalID.getNumber());
 		super.receivePrepare(fromUID, proposalID);
-
+		if (acceptor.persistenceRequired()){
+			acceptor.persisted();
+		}
 		// If the prepare came from another node, update the timestamp
 		if (!proposalID.equals(getProposalID()))
 			lastPrepareTimestamp = timestamp();

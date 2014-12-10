@@ -39,6 +39,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
      * -----------------------------------------------
      */
     public void sendPrepare(ProposalID proposalID){
+        System.out.println("PaxosMessengerImpl: sendPrepare" + proposalID.toString());
         // for address in map
         //      connection( address.recvPrepare(nodeUID, proposalID) )
         for (int i = 0; i < conf.getMessengerConfigurations().size(); i++) {
@@ -67,8 +68,38 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
     }
 
     public void sendPromise(String proposerUID, ProposalID proposalID, ProposalID previousID, Object acceptedValue){
+        System.out.println("PaxosMessengerImpl: sendPromise " + " proposerUID " +  proposerUID + "proposalID" +  proposalID + "previousID" + previousID + " acceptedValue " + acceptedValue);
         // only send to proposerUID
         //      connection( proposerUID.recvPromise( nodeID, proposalID, previousID, acceptedValue)
+
+        try {
+            TTransport transport;
+            // proposerUID = 0
+            Messenger m = conf.getOneMessenger(0);
+            System.out.println("PaxosMessengerImpl sendPromise sending to: " + m.getAddress());
+            transport = new TSocket(m.getAddress(), m.getPort());
+            transport.open();
+
+            TProtocol protocol = new TBinaryProtocol(transport);
+            Ballot.Client client = new Ballot.Client(protocol);
+
+            client.promise(nodeUID,
+                    new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()),
+                    new ThriftProposalID(previousID.getNumber(), previousID.getUID()),
+                    (Long)acceptedValue
+            );
+
+// TODO FIX THIS Object - AcceptedValue
+
+//        public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, long acceptedValue) throws TException {
+
+
+            transport.close();
+        } catch (TException x) {
+            x.printStackTrace();
+        }
+
+
         System.out.println(proposerUID + " has sent a promise (paxos send promise)");
     }
 

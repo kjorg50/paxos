@@ -6,7 +6,8 @@ import java.util.Stack;
 import cocagne.paxos.functional.HeartbeatNode;
 import edu.ucsb.cs.thrift.ThriftClient;
 import edu.ucsb.cs.thrift.ThriftServer;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Main class of our Paxos implementation. Handles the command line interaction with the user.
@@ -20,8 +21,8 @@ public class Main {
     public static final int UNFAIL = 5;
     public static final int MAJORITY=2; // quorum size
     public static int nodeNumber;
-
-    static Logger logger = Logger.getLogger(Main.class);
+    private Log log = LogFactory.getLog(Main.class);
+   // static Logger logger = Logger.getLogger(Main.class);
     //final static org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class);
     public static PaxosHandler handler;
     private PaxosMessengerImpl messenger;
@@ -30,7 +31,7 @@ public class Main {
     private Double balance;
 
     public void init(int num) {
-
+        log.error("asd********");
         String nodeUID = "node"+num;
         messenger = new PaxosMessengerImpl(nodeUID);
         heartbeatNode = new HeartbeatNode(messenger,nodeUID,MAJORITY,null,1000,5000);
@@ -52,9 +53,9 @@ public class Main {
                         System.out.println("Type amount to deposit:");
                         if (sc.hasNextDouble()) {
                             Double amount = sc.nextDouble();
-                            logger.info("Depositing " + amount);
+                            log.info("Depositing " + amount);
                             deposit(amount);
-                            logger.info(amount + " deposited");
+                            log.info(amount + " deposited");
 
                         } else {
                             System.out.println("Please behave.");
@@ -65,9 +66,9 @@ public class Main {
                         System.out.println("Type amount to withdraw:");
                         if (sc.hasNextDouble()) {
                             Double amount = sc.nextDouble();
-                            logger.info("Withdrawing " + amount);
+                            log.info("Withdrawing " + amount);
                             withdraw(amount);
-                            logger.info(amount + " withdrawn");
+                            log.info(amount + " withdrawn");
                         } else {
                             System.out.println("Please behave.");
                             sc.next();

@@ -34,6 +34,7 @@ public class PracticalAcceptorImpl extends EssentialAcceptorImpl implements Prac
 
 	@Override
 	public void receivePrepare(String fromUID, ProposalID proposalID) {
+		System.out.println("PracticalAcceptorImpl: receivePrepare fromUID " + fromUID + " proposalID " + proposalID.toString());
 		if (this.promisedID != null && proposalID.equals(promisedID)) { // duplicate message, I already promised to this proposal
 			if (active)
 				messenger.sendPromise(fromUID, proposalID, acceptedID, acceptedValue);

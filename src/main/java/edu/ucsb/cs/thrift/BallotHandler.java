@@ -24,12 +24,13 @@ public class BallotHandler implements Ballot.Iface{
 
     @Override
     public void prepare(String myId, ThriftProposalID propID) throws TException {
-        System.out.println("*** I have received a prepare request (in Thrift)" );
+        System.out.println("BallotHandler: prepare myId " + myId + " propID " + propID.toString());
         heartbeatNode.receivePrepare(myId, new ProposalID((int) propID.getBallotNumber(), propID.getUid()));
     }
 
     @Override
     public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, long acceptedValue) throws TException {
+        System.out.println("BallotHandler: promise myId " + myId + " propID " + propID + " prevPropId " + prevPropId + "acceptedValue" + acceptedValue);
 
     }
 

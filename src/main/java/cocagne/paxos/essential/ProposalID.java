@@ -74,5 +74,10 @@ public class ProposalID {
 		return true;
 	}
 
+	@Override
+	public String toString(){
+		return "number " + number + " uid " + uid;
+	}
+
 	
 }

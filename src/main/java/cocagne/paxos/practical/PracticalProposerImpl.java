@@ -37,6 +37,7 @@ public class PracticalProposerImpl extends EssentialProposerImpl implements Prac
 	 */
 	@Override
 	public void prepare( boolean incrementProposalNumber ) {
+		System.out.println("PracticalProposerImpl: prepare" + incrementProposalNumber);
 		if (incrementProposalNumber) {
 			leader = false;
 			
