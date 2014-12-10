@@ -71,8 +71,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
         try {
             TTransport transport;
-            // proposerUID = 0
-            Messenger m = conf.getOneMessenger(0);
+            Messenger m = conf.getOneMessenger(Integer.parseInt(proposerUID));
             System.out.println("PaxosMessengerImpl sendPromise sending to: " + m.getAddress());
             transport = new TSocket(m.getAddress(), m.getPort());
             transport.open();
@@ -87,7 +86,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
                 client.promise(nodeUID,
                         new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()),
                         new ThriftProposalID(-1, "null"),
-                        (Long)acceptedValue
+                        new Long(-1)
                 );
             } else {
                 client.promise(nodeUID,

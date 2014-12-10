@@ -20,7 +20,7 @@ public class Main {
     public static final int FAIL = 4;
     public static final int UNFAIL = 5;
     public static final int MAJORITY=2; // quorum size
-    public static int nodeNumber;
+    public static String nodeNumber;
     private Log log = LogFactory.getLog(Main.class);
    // static Logger logger = Logger.getLogger(Main.class);
     //final static org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class);
@@ -30,9 +30,8 @@ public class Main {
     private Stack<Transaction> transactions;
     private Double balance;
 
-    public void init(int num) {
+    public void init(String nodeUID) {
         log.error("asd********");
-        String nodeUID = "node"+num;
         messenger = new PaxosMessengerImpl(nodeUID);
         heartbeatNode = new HeartbeatNode(messenger,nodeUID,MAJORITY,null,1000,5000);
         transactions = new Stack<Transaction>();
@@ -170,7 +169,7 @@ public class Main {
         Main mainClass = new Main();
 
         if(args.length == 1){
-            nodeNumber = Integer.parseInt(args[0]);
+            nodeNumber = args[0];
             System.out.println("Main: Setting up node: " + nodeNumber);
         } else{
             System.out.println("Usage:  java -cp target/paxos-0.0.1.jar edu.ucsb.cs.Main <nodeNumberNUM>");
