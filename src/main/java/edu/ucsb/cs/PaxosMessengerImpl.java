@@ -79,12 +79,24 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
             TProtocol protocol = new TBinaryProtocol(transport);
             Ballot.Client client = new Ballot.Client(protocol);
+            System.out.println("PaxosMessengerImpl sendPromise 2: " + m.getAddress());
 
-            client.promise(nodeUID,
-                    new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()),
-                    new ThriftProposalID(previousID.getNumber(), previousID.getUID()),
-                    (Long)acceptedValue
-            );
+            // If we have the very first request, and previousUID is null
+            // send fake "lowest" previous proposal
+            if(previousID == null){
+                client.promise(nodeUID,
+                        new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()),
+                        new ThriftProposalID(-1, "null"),
+                        (Long)acceptedValue
+                );
+            } else {
+                client.promise(nodeUID,
+                        new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()),
+                        new ThriftProposalID(previousID.getNumber(), previousID.getUID()),
+                        (Long)acceptedValue
+                );
+
+            }
 
 // TODO FIX THIS Object - AcceptedValue
 
