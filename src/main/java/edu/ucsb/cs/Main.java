@@ -51,8 +51,6 @@ public class Main {
                             handler.deposit(amount);
                             logger.info(amount + " deposited");
 
-                            ThriftServer.startThriftServer();
-                            ThriftClient.callClient();
                         } else {
                             System.out.println("Please behave.");
                             sc.next();

@@ -1,6 +1,8 @@
 package edu.ucsb.cs;
 
 import cocagne.paxos.functional.HeartbeatNode;
+import edu.ucsb.cs.thrift.ThriftClient;
+import edu.ucsb.cs.thrift.ThriftServer;
 
 import java.util.Stack;
 
@@ -27,6 +29,8 @@ public class PaxosHandler {
         node = new HeartbeatNode(messenger,nodeUID,MAJORITY,null,1000,5000);
         transactions = new Stack<Transaction>();
         balance = 0.0;
+
+        ThriftServer.startThriftServer();
     }
 
     public void deposit(double amount){
@@ -49,6 +53,7 @@ public class PaxosHandler {
 //
 //        transactions.add(result);
 
+        ThriftClient.callClient();
         // TODO - add logging
 
         return;

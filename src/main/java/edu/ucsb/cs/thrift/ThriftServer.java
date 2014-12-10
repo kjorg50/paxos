@@ -32,6 +32,7 @@ import org.apache.thrift.server.TServer;
         import org.apache.thrift.transport.TServerSocket;
         import org.apache.thrift.transport.TServerTransport;
         import org.apache.thrift.transport.TSSLTransportFactory.TSSLTransportParameters;
+import org.apache.thrift.transport.TTransportException;
 
 public class ThriftServer {
 
@@ -46,7 +47,21 @@ public class ThriftServer {
 
             Runnable simple = new Runnable() {
                 public void run() {
-                    simple(processor);
+
+                    TServerTransport serverTransport = null;
+                    try {
+                        serverTransport = new TServerSocket(9090);
+                    } catch (TTransportException e) {
+                        e.printStackTrace();
+                    }
+                    TServer server = new TSimpleServer(new Args(serverTransport).processor(processor));
+
+                    // Use this for a multithreaded server
+                    // TServer server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
+
+                    System.out.println("Starting the Thrift server...");
+                    server.serve();
+
                 }
             };
 
@@ -55,21 +70,5 @@ public class ThriftServer {
             x.printStackTrace();
         }
     }
-
-    public static void simple(Ballot.Processor processor) {
-        try {
-            TServerTransport serverTransport = new TServerSocket(9090);
-            TServer server = new TSimpleServer(new Args(serverTransport).processor(processor));
-
-            // Use this for a multithreaded server
-            // TServer server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
-
-            System.out.println("Starting the simple server...");
-            server.serve();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
 }
