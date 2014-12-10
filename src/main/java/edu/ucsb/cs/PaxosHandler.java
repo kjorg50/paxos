@@ -17,6 +17,7 @@ public class PaxosHandler {
 
     private int nodeNum;
     private String nodeUID;
+
     private HeartbeatNode node;
     private PaxosMessengerImpl messenger;
     private Stack<Transaction> transactions;
@@ -25,7 +26,7 @@ public class PaxosHandler {
     public PaxosHandler(int num){
         nodeNum = num;
         nodeUID = "node"+nodeNum;
-        messenger = new PaxosMessengerImpl(nodeUID);
+        messenger = new PaxosMessengerImpl(nodeUID, this);
         node = new HeartbeatNode(messenger,nodeUID,MAJORITY,null,1000,5000);
         transactions = new Stack<Transaction>();
         balance = 0.0;
@@ -99,11 +100,17 @@ public class PaxosHandler {
         // TODO - add logging
     }
 
+    // TODO - print()
+
     public int getNodeNum(){
         return nodeNum;
     }
 
     public String getNodeUID(){
         return nodeUID;
+    }
+
+    public HeartbeatNode getNode() {
+        return node;
     }
 }

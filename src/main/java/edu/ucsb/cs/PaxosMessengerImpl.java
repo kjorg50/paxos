@@ -3,25 +3,32 @@ package edu.ucsb.cs;
 import java.io.*;
 import java.net.*;
 import java.util.List;
+import java.util.Map;
 
 import cocagne.paxos.essential.ProposalID;
 import cocagne.paxos.functional.HeartbeatCallback;
 import cocagne.paxos.functional.HeartbeatMessenger;
 import edu.ucsb.cs.thrift.Ballot;
+import edu.ucsb.cs.thrift.ThriftProposalID;
 import org.apache.thrift.TException;
+import org.apache.thrift.protocol.TBinaryProtocol;
+import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.transport.TSocket;
+import org.apache.thrift.transport.TTransport;
 
 /**
  * This class will handle the messaging between different nodes in the system
  */
 public class PaxosMessengerImpl implements HeartbeatMessenger, Ballot.Iface{
 
-    public static final String SERVER_URL = "127.0.0.1";
-    public static final int PORT = 5050;
-
     private String nodeUID;
+    private MessengerConf conf;
+    private PaxosHandler handler;
 
-    public PaxosMessengerImpl(String id){
+    public PaxosMessengerImpl(String id, PaxosHandler _handler){
         this.nodeUID = id;
+        conf = new MessengerConf();
+        this.handler = _handler;
     }
 
     public String getNodeUID(){ return nodeUID;
@@ -34,14 +41,34 @@ public class PaxosMessengerImpl implements HeartbeatMessenger, Ballot.Iface{
      * -----------------------------------------------
      */
     public void sendPrepare(ProposalID proposalID){
-        // for address in list
+        // for address in map
         //      connection( address.recvPrepare(nodeUID, proposalID) )
+        for (int i = 0; i < conf.getMessengerConfigurations().size(); i++) {
+            Messenger m = conf.getOneMessenger(i);
+
+            try {
+                TTransport transport;
+                transport = new TSocket(m.getAddress(), m.getPort());
+                transport.open();
+
+
+                TProtocol protocol = new TBinaryProtocol(transport);
+                Ballot.Client client = new Ballot.Client(protocol);
+
+                client.prepare(nodeUID,new ThriftProposalID(proposalID.getNumber(),proposalID.getUID()));
+
+                transport.close();
+            } catch (TException x) {
+                x.printStackTrace();
+            }
+        }
 
     }
 
     public void sendPromise(String proposerUID, ProposalID proposalID, ProposalID previousID, Object acceptedValue){
         // only send to proposerUID
         //      connection( proposerUID.recvPromise( nodeID, proposalID, previousID, acceptedValue)
+        System.out.println(proposerUID + " has sent a promise (paxos send promise)");
     }
 
     public void sendAccept(ProposalID proposalID, Object proposalValue){
@@ -115,51 +142,50 @@ public class PaxosMessengerImpl implements HeartbeatMessenger, Ballot.Iface{
         // record in log the change in leadership
     }
 
-
-    /*
+     /*
         ==============================================================
         Thrift methods' implementation
         ==============================================================
      */
 
+    @Override
+    public void prepare(String myId, ThriftProposalID propID) throws TException {
+        System.out.println("*** I have received a prepare request (in Thrift)" );
+        handler.getNode().receivePrepare(myId, new ProposalID((int)propID.getBallotNumber(),propID.getUid()) );
+    }
 
     @Override
-    public void prepare(String myId, edu.ucsb.cs.thrift.ProposalID propID) throws TException {
+    public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, long acceptedValue) throws TException {
 
     }
 
     @Override
-    public void promise(String myId, edu.ucsb.cs.thrift.ProposalID propID, edu.ucsb.cs.thrift.ProposalID prevPropId, long acceptedValue) throws TException {
+    public void accept(String myId, ThriftProposalID propID, long acceptedValue) throws TException {
 
     }
 
     @Override
-    public void accept(String myId, edu.ucsb.cs.thrift.ProposalID propID, long acceptedValue) throws TException {
+    public void accepted(String myId, ThriftProposalID propID, long acceptedValue) throws TException {
 
     }
 
     @Override
-    public void accepted(String myId, edu.ucsb.cs.thrift.ProposalID propID, long acceptedValue) throws TException {
+    public void decide(ThriftProposalID propID, long value) throws TException {
 
     }
 
     @Override
-    public void decide(edu.ucsb.cs.thrift.ProposalID propID, long value) throws TException {
+    public void prepareNACK(String myId, ThriftProposalID propID, ThriftProposalID promisedID) throws TException {
 
     }
 
     @Override
-    public void prepareNACK(String myId, edu.ucsb.cs.thrift.ProposalID propID, edu.ucsb.cs.thrift.ProposalID promisedID) throws TException {
+    public void acceptNACK(String myId, ThriftProposalID propID, ThriftProposalID promisedID) throws TException {
 
     }
 
     @Override
-    public void acceptNACK(String myId, edu.ucsb.cs.thrift.ProposalID propID, edu.ucsb.cs.thrift.ProposalID promisedID) throws TException {
-
-    }
-
-    @Override
-    public void heartbeat(String myId, edu.ucsb.cs.thrift.ProposalID leaderPropID) throws TException {
+    public void heartbeat(String myId, ThriftProposalID leaderPropID) throws TException {
 
     }
 
@@ -167,4 +193,5 @@ public class PaxosMessengerImpl implements HeartbeatMessenger, Ballot.Iface{
     public List<Long> update(long lastAcceptedBallot) throws TException {
         return null;
     }
+
 }
