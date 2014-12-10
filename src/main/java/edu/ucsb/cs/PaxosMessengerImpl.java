@@ -47,18 +47,15 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
             try {
                 TTransport transport;
-                System.out.println("*** "+m.getAddress());
+                System.out.println("PaxosMessengerImpl sendPrepare sending to: " + m.getAddress());
                 transport = new TSocket(m.getAddress(), m.getPort());
                 transport.open();
 
-                System.out.println("*** Before thrift client creation");
                 TProtocol protocol = new TBinaryProtocol(transport);
                 Ballot.Client client = new Ballot.Client(protocol);
 
-                System.out.println("*** After thrift client creation, before prepare sent");
                 client.prepare(nodeUID,new ThriftProposalID(proposalID.getNumber(),proposalID.getUID()));
 
-                System.out.println("*** After prepare sent by Thrift ");
                 transport.close();
             } catch (TException x) {
                 x.printStackTrace();
