@@ -73,8 +73,9 @@ public class ThriftClient {
 
            // perform(client);
 
-            client.isLeader();
-            System.out.println("isLeader()" +  client.isLeader());
+            //client.isLeader();
+            client.decide(1L,2L);
+            System.out.println("decide() called");
 
 
             transport.close();

@@ -50,7 +50,7 @@ public class BallotHandler implements Ballot.Iface {
 
     @Override
     public void decide(long ballotNumber, long value) throws TException {
-
+        System.out.println("from decide " + ballotNumber + " " + value);
     }
 
     @Override
