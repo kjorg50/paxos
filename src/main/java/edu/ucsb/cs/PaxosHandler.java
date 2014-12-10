@@ -30,24 +30,24 @@ public class PaxosHandler {
     }
 
     public void deposit(double amount){
-        Transaction newTxn;
-        if(transactions.empty()) {
-            newTxn = new Transaction(0.0, amount);
-        } else {
-            Double prev = transactions.peek().getAmount();
-            newTxn = new Transaction(prev, prev+amount);
-        }
-        node.setProposal(newTxn);
-        node.prepare(); // run paxos
-
-        while(!node.isComplete()){
-            // timeout after certain amount?
-            if(node.isComplete())
-                break;
-        }
-        Transaction result = (Transaction)node.getFinalValue();
-
-        transactions.add(result);
+//        Transaction newTxn;
+//        if(transactions.empty()) {
+//            newTxn = new Transaction(0.0, amount);
+//        } else {
+//            Double prev = transactions.peek().getAmount();
+//            newTxn = new Transaction(prev, prev+amount);
+//        }
+//        node.setProposal(newTxn);
+//        node.prepare(); // run paxos
+//
+//        while(!node.isComplete()){
+//            // timeout after certain amount?
+//            if(node.isComplete())
+//                break;
+//        }
+//        Transaction result = (Transaction)node.getFinalValue();
+//
+//        transactions.add(result);
 
         // TODO - add logging
 

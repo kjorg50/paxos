@@ -1,6 +1,9 @@
 package edu.ucsb.cs;
 
 import java.util.Scanner;
+
+import edu.ucsb.cs.thrift.ThriftClient;
+import edu.ucsb.cs.thrift.ThriftServer;
 import org.apache.log4j.Logger;
 
 /**
@@ -47,6 +50,9 @@ public class Main {
                             logger.info("Depositing " + amount);
                             handler.deposit(amount);
                             logger.info(amount + " deposited");
+
+                            ThriftServer.startThriftServer();
+                            ThriftClient.callClient();
                         } else {
                             System.out.println("Please behave.");
                             sc.next();
