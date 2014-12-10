@@ -22,7 +22,7 @@ package edu.ucsb.cs.thrift;
  * specific language governing permissions and limitations
  * under the License.
  */
-        import org.apache.thrift.TException;
+import org.apache.thrift.TException;
         import org.apache.thrift.transport.TSSLTransportFactory;
         import org.apache.thrift.transport.TTransport;
         import org.apache.thrift.transport.TSocket;

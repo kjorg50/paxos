@@ -60,6 +60,9 @@ public class PaxosMessengerImpl implements HeartbeatMessenger, Ballot.Iface{
      * @param value the value of the accepted proposal
      */
     public void onResolution(ProposalID proposalID, Object value){
+        // for address in list
+        //      write to file
+
         // Add to log that this round of paxos has been resolved
         // "proposal number:" proposalID ", value:" value
     }
@@ -111,6 +114,12 @@ public class PaxosMessengerImpl implements HeartbeatMessenger, Ballot.Iface{
     public void onLeadershipChange(String previousLeaderUID, String newLeaderUID){
         // record in log the change in leadership
     }
+
+
+    /*
+        ==============================================================
+
+     */
 
     @Override
     public void prepare(long ballotNumber, long myId) throws TException {
