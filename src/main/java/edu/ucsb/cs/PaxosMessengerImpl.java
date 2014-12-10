@@ -42,7 +42,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
      * -----------------------------------------------
      */
     public void sendPrepare(ProposalID proposalID){
-        log.debug("sendPrepare" + proposalID.toString());
+        log.debug("sendPrepare: proposalID" + proposalID);
         // for address in map
         //      connection( address.recvPrepare(nodeUID, proposalID) )
         for (int i = 0; i < conf.getMessengerConfigurations().size(); i++) {
@@ -50,7 +50,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
             try {
                 TTransport transport;
-                log.debug("sendPrepare sending to: " + m.getAddress());
+                log.debug("sendPrepare: sending to " + m.getAddress());
                 transport = new TSocket(m.getAddress(), m.getPort());
                 transport.open();
 
@@ -68,20 +68,19 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
     }
 
     public void sendPromise(String proposerUID, ProposalID proposalID, ProposalID previousID, Object acceptedValue){
-        log.debug("sendPromise " + " proposerUID " + proposerUID + "proposalID" + proposalID + "previousID" + previousID + " acceptedValue " + acceptedValue);
+        log.debug("sendPromise: proposerUID " + proposerUID + ", proposalID " + proposalID + ", previousID " + previousID + ", acceptedValue " + acceptedValue);
         // only send to proposerUID
         //      connection( proposerUID.recvPromise( nodeID, proposalID, previousID, acceptedValue)
 
         try {
             TTransport transport;
             Messenger m = conf.getOneMessenger(Integer.parseInt(proposerUID));
-            log.debug("sendPromise sending to: " + m.getAddress());
+            log.debug("sendPromise: sending to " + m.getAddress());
             transport = new TSocket(m.getAddress(), m.getPort());
             transport.open();
 
             TProtocol protocol = new TBinaryProtocol(transport);
             Ballot.Client client = new Ballot.Client(protocol);
-            log.debug("sendPromise to: " + m.getAddress());
             ThriftProposalID thriftPreviousID ;
 
             if(previousID == null){

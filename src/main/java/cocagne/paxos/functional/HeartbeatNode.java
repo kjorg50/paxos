@@ -7,6 +7,8 @@ import java.util.HashSet;
 
 import cocagne.paxos.essential.ProposalID;
 import cocagne.paxos.practical.PracticalNode;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class HeartbeatNode extends PracticalNode {
 	
@@ -19,6 +21,7 @@ public class HeartbeatNode extends PracticalNode {
 	protected long               livenessWindow          = 5000; // Milliseconds
 	protected boolean            acquiringLeadership     = false;
 	protected HashSet<String>    acceptNACKs             = new HashSet<String>();
+	private Log log = LogFactory.getLog(HeartbeatNode.class);
 	
 	
 	public HeartbeatNode(HeartbeatMessenger messenger, String proposerUID,
@@ -133,7 +136,7 @@ public class HeartbeatNode extends PracticalNode {
 	
 	@Override
 	public void receivePrepare(String fromUID, ProposalID proposalID) {
-		System.out.println("HeartbeatNode: prepare fromUID  proposalID.getUID()  proposalID.getNumber" + fromUID + proposalID.getUID() + proposalID.getNumber());
+		log.debug("prepare: fromUID " + fromUID + ", proposalID.getUID() " + proposalID.getUID() + ", proposalID.getNumber "  + proposalID.getNumber());
 		super.receivePrepare(fromUID, proposalID);
 		if (acceptor.persistenceRequired()){
 			acceptor.persisted();

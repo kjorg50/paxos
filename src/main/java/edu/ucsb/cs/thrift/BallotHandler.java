@@ -27,13 +27,13 @@ public class BallotHandler implements Ballot.Iface{
 
     @Override
     public void prepare(String myId, ThriftProposalID propID) throws TException {
-        log.debug("prepare myId " + myId + " propID " + propID.toString());
+        log.debug("prepare: myId " + myId + ", propID " + propID.toString());
         heartbeatNode.receivePrepare(myId, new ProposalID((int) propID.getBallotNumber(), propID.getUid()));
     }
 
     @Override
     public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, long acceptedValue) throws TException {
-        log.debug("promise myId " + myId + " propID " + propID + " prevPropId " + prevPropId + "acceptedValue" + acceptedValue);
+        log.debug("promise: myId " + myId + ", propID " + propID + ", prevPropId " + prevPropId + ", acceptedValue " + acceptedValue);
 
     }
 
