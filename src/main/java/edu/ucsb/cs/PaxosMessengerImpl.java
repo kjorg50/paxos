@@ -10,6 +10,8 @@ import cocagne.paxos.functional.HeartbeatCallback;
 import cocagne.paxos.functional.HeartbeatMessenger;
 import edu.ucsb.cs.thrift.Ballot;
 import edu.ucsb.cs.thrift.ThriftProposalID;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
@@ -23,6 +25,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
     private String nodeUID;
     private MessengerConf conf;
+    private Log log = LogFactory.getLog(PaxosMessengerImpl.class);
 
     public PaxosMessengerImpl(String id){
         this.nodeUID = id;
@@ -39,7 +42,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
      * -----------------------------------------------
      */
     public void sendPrepare(ProposalID proposalID){
-        System.out.println("PaxosMessengerImpl: sendPrepare" + proposalID.toString());
+        log.debug("sendPrepare" + proposalID.toString());
         // for address in map
         //      connection( address.recvPrepare(nodeUID, proposalID) )
         for (int i = 0; i < conf.getMessengerConfigurations().size(); i++) {
@@ -47,7 +50,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
             try {
                 TTransport transport;
-                System.out.println("PaxosMessengerImpl sendPrepare sending to: " + m.getAddress());
+                log.debug("sendPrepare sending to: " + m.getAddress());
                 transport = new TSocket(m.getAddress(), m.getPort());
                 transport.open();
 
@@ -65,50 +68,43 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
     }
 
     public void sendPromise(String proposerUID, ProposalID proposalID, ProposalID previousID, Object acceptedValue){
-        System.out.println("PaxosMessengerImpl: sendPromise " + " proposerUID " +  proposerUID + "proposalID" +  proposalID + "previousID" + previousID + " acceptedValue " + acceptedValue);
+        log.debug("sendPromise " + " proposerUID " + proposerUID + "proposalID" + proposalID + "previousID" + previousID + " acceptedValue " + acceptedValue);
         // only send to proposerUID
         //      connection( proposerUID.recvPromise( nodeID, proposalID, previousID, acceptedValue)
 
         try {
             TTransport transport;
             Messenger m = conf.getOneMessenger(Integer.parseInt(proposerUID));
-            System.out.println("PaxosMessengerImpl sendPromise sending to: " + m.getAddress());
+            log.debug("sendPromise sending to: " + m.getAddress());
             transport = new TSocket(m.getAddress(), m.getPort());
             transport.open();
 
             TProtocol protocol = new TBinaryProtocol(transport);
             Ballot.Client client = new Ballot.Client(protocol);
-            System.out.println("PaxosMessengerImpl sendPromise 2: " + m.getAddress());
+            log.debug("sendPromise to: " + m.getAddress());
+            ThriftProposalID thriftPreviousID ;
 
-            // If we have the very first request, and previousUID is null
-            // send fake "lowest" previous proposal
             if(previousID == null){
-                client.promise(nodeUID,
-                        new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()),
-                        new ThriftProposalID(-1, "null"),
-                        new Long(-1)
-                );
-            } else {
-                client.promise(nodeUID,
-                        new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()),
-                        new ThriftProposalID(previousID.getNumber(), previousID.getUID()),
-                        (Long)acceptedValue
-                );
-
+                thriftPreviousID =  new ThriftProposalID(-1, "null");
+            } else{
+                thriftPreviousID  = new ThriftProposalID(previousID.getNumber(), previousID.getUID());
             }
 
-// TODO FIX THIS Object - AcceptedValue
-
-//        public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, long acceptedValue) throws TException {
-
-
+            if(acceptedValue == null){
+                acceptedValue = new Long(-1);
+            }
+            // If we have the very first request, and previousUID is null
+            // send fake "lowest" previous proposal
+            client.promise(nodeUID,
+                    new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()),
+                    thriftPreviousID,
+                    (Long) acceptedValue
+            );
             transport.close();
         } catch (TException x) {
             x.printStackTrace();
         }
-
-
-        System.out.println(proposerUID + " has sent a promise (paxos send promise)");
+        log.debug("sendPromise: Promise sent to " + proposerUID );
     }
 
     public void sendAccept(ProposalID proposalID, Object proposalValue){

@@ -19,11 +19,9 @@ public class Main {
     public static final int BALANCE = 3;
     public static final int FAIL = 4;
     public static final int UNFAIL = 5;
-    public static final int MAJORITY=2; // quorum size
+    public static final int MAJORITY=2; //TODO quorum size
     public static String nodeNumber;
     private Log log = LogFactory.getLog(Main.class);
-   // static Logger logger = Logger.getLogger(Main.class);
-    //final static org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class);
     public static PaxosHandler handler;
     private PaxosMessengerImpl messenger;
     private HeartbeatNode heartbeatNode;
@@ -31,7 +29,6 @@ public class Main {
     private Double balance;
 
     public void init(String nodeUID) {
-        log.error("asd********");
         messenger = new PaxosMessengerImpl(nodeUID);
         heartbeatNode = new HeartbeatNode(messenger,nodeUID,MAJORITY,null,1000,5000);
         transactions = new Stack<Transaction>();
@@ -74,7 +71,7 @@ public class Main {
                         }
                         break;
                     case BALANCE:
-                        System.out.printf("Your account balance is $%.2f\n", getBalance() );
+                        System.out.printf("Your account balance is $%.2f\n", getBalance());
                         break;
                     case FAIL:
                         fail();

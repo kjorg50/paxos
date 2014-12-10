@@ -5,12 +5,16 @@ package cocagne.paxos.practical;
 
 import cocagne.paxos.essential.EssentialAcceptorImpl;
 import cocagne.paxos.essential.ProposalID;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 public class PracticalAcceptorImpl extends EssentialAcceptorImpl implements PracticalAcceptor {
 	
 	protected String  pendingAccepted = null;
 	protected String  pendingPromise  = null;
 	protected boolean active          = true;
+	private Log log = LogFactory.getLog(PracticalAcceptorImpl.class);
 	
 	public PracticalAcceptorImpl(PracticalMessenger messenger) {
 		super(messenger);
@@ -34,7 +38,7 @@ public class PracticalAcceptorImpl extends EssentialAcceptorImpl implements Prac
 
 	@Override
 	public void receivePrepare(String fromUID, ProposalID proposalID) {
-		System.out.println("PracticalAcceptorImpl: receivePrepare fromUID " + fromUID + " proposalID " + proposalID.toString());
+		log.debug("PracticalAcceptorImpl: receivePrepare fromUID " + fromUID + " proposalID " + proposalID.toString());
 		if (this.promisedID != null && proposalID.equals(promisedID)) { // duplicate message, I already promised to this proposal
 			if (active)
 				messenger.sendPromise(fromUID, proposalID, acceptedID, acceptedValue);
