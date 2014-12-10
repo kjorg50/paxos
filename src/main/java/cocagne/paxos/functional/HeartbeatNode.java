@@ -60,7 +60,7 @@ public class HeartbeatNode extends PracticalNode {
 
 	@Override
 	public void prepare(boolean incrementProposalNumber) {
-		if (incrementProposalNumber)
+		if (incrementProposalNumber) // if we want to start a new election, clear out old NACKs
 			acceptNACKs.clear();
 		super.prepare(incrementProposalNumber);
 	}
@@ -73,7 +73,7 @@ public class HeartbeatNode extends PracticalNode {
 		return timestamp() - lastPrepareTimestamp <= livenessWindow * 1.5;
 	}
 	
-	// If the system is not "live", then aquire leadership
+	// If the system is not "live", and there is no leader, then aquire leadership
 	public void pollLiveness() {
 		if (!leaderIsAlive() && !observedRecentPrepare()) {
 			if (acquiringLeadership)
@@ -93,7 +93,8 @@ public class HeartbeatNode extends PracticalNode {
 			leaderUID        = fromUID;
 			leaderProposalID = proposalID;
 			
-			// If I am leader, I lose leadership and become a witness
+			// If I am leader, and this heartbeat is from a new proposer,
+			// I lose leadership and become a witness
 			if (isLeader() && !fromUID.equals(getProposerUID())) {
 				setLeader(false);
 				messenger.onLeadershipLost();
@@ -142,7 +143,8 @@ public class HeartbeatNode extends PracticalNode {
 		String preLeaderUID = leaderUID;
 		
 		super.receivePromise(fromUID, proposalID, prevAcceptedID, prevAcceptedValue);
-		
+
+		// if I now am the leader and there was no previous leader
 		if (preLeaderUID == null && isLeader()) {
 			String oldLeaderUID = getProposerUID();
 			

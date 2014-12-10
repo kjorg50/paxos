@@ -34,12 +34,12 @@ public class PracticalAcceptorImpl extends EssentialAcceptorImpl implements Prac
 
 	@Override
 	public void receivePrepare(String fromUID, ProposalID proposalID) {
-		if (this.promisedID != null && proposalID.equals(promisedID)) { // duplicate message
+		if (this.promisedID != null && proposalID.equals(promisedID)) { // duplicate message, I already promised to this proposal
 			if (active)
 				messenger.sendPromise(fromUID, proposalID, acceptedID, acceptedValue);
 		}
-		else if (this.promisedID == null || proposalID.isGreaterThan(promisedID)) {
-			if (pendingPromise == null) {
+		else if (this.promisedID == null || proposalID.isGreaterThan(promisedID)) { // first proposal, or newer proposal
+			if (pendingPromise == null) {											// promise to this Prepare
 				promisedID = proposalID;
 				if (active)
 					pendingPromise = fromUID;
@@ -56,12 +56,14 @@ public class PracticalAcceptorImpl extends EssentialAcceptorImpl implements Prac
 	@Override
 	public void receiveAcceptRequest(String fromUID, ProposalID proposalID,
 			Object value) {
+		// if this matches our already accepted proposal, send the "accepted" message again
 		if (acceptedID != null && proposalID.equals(acceptedID) && acceptedValue.equals(value)) {
 			if (active)
 				messenger.sendAccepted(proposalID, value);
 		}
 		else if (promisedID == null || proposalID.isGreaterThan(promisedID) || proposalID.equals(promisedID)) {
-			if (pendingAccepted == null) {
+			if (pendingAccepted == null) {  // if we have not made any promises, or have any pending accepted values
+				 							// then we can accept this request
 				promisedID    = proposalID;
 				acceptedID    = proposalID;
 				acceptedValue = value;
@@ -70,7 +72,7 @@ public class PracticalAcceptorImpl extends EssentialAcceptorImpl implements Prac
 					pendingAccepted = fromUID;
 			}
 		}
-		else {
+		else { // already accepted to another, and/or proposal is old, send NACK
 			if (active)
 				((PracticalMessenger)messenger).sendAcceptNACK(fromUID, proposalID, promisedID);
 		}

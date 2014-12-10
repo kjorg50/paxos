@@ -3,7 +3,6 @@ package edu.ucsb.cs;
 import java.util.Scanner;
 import org.apache.log4j.Logger;
 
-
 /**
  * Main class of our Paxos implementation. Handles the command line interaction with the user.
  */

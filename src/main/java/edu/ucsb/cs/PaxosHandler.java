@@ -2,6 +2,8 @@ package edu.ucsb.cs;
 
 import cocagne.paxos.functional.HeartbeatNode;
 
+import java.util.Stack;
+
 /**
  * Created by kylejorgensen on 11/30/14.
  *
@@ -15,29 +17,71 @@ public class PaxosHandler {
     private String nodeUID;
     private HeartbeatNode node;
     private PaxosMessengerImpl messenger;
+    private Stack<Transaction> transactions;
+    private Double balance;
 
     public PaxosHandler(int num){
         nodeNum = num;
         nodeUID = "node"+nodeNum;
-        messenger = new PaxosMessengerImpl();
+        messenger = new PaxosMessengerImpl(nodeUID);
         node = new HeartbeatNode(messenger,nodeUID,MAJORITY,null,1000,5000);
+        transactions = new Stack<Transaction>();
+        balance = 0.0;
     }
 
     public void deposit(double amount){
-        // TODO - run paxos
+        Transaction newTxn;
+        if(transactions.empty()) {
+            newTxn = new Transaction(0.0, amount);
+        } else {
+            Double prev = transactions.peek().getAmount();
+            newTxn = new Transaction(prev, prev+amount);
+        }
+        node.setProposal(newTxn);
+        node.prepare(); // run paxos
+
+        while(!node.isComplete()){
+            // timeout after certain amount?
+            if(node.isComplete())
+                break;
+        }
+        Transaction result = (Transaction)node.getFinalValue();
+
+        transactions.add(result);
 
         // TODO - add logging
+
+        return;
     }
 
     public void withdraw(double amount){
-        // TODO - run paxos
+        Transaction newTxn;
+        if(transactions.empty()) {
+            newTxn = new Transaction(0.0, -amount);
+        } else {
+            Double prev = transactions.peek().getAmount();
+            newTxn = new Transaction(prev, prev-amount);
+        }
+        node.setProposal(newTxn);
+        node.prepare(); // run paxos
+
+        while(!node.isComplete()){
+            // timeout after certain amount?
+            if(node.isComplete())
+                break;
+        }
+        Transaction result = (Transaction)node.getFinalValue();
+
+        transactions.add(result);
 
         // TODO - add logging
+
+        return;
     }
 
     public double getBalance(){
-        return 42.0; // STUB
         // TODO - add logging
+        return transactions.peek().getAmount();
     }
 
     public void fail(){
