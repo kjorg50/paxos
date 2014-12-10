@@ -24,6 +24,7 @@ package edu.ucsb.cs.thrift;
  * under the License.
  */
 
+import edu.ucsb.cs.PaxosMessengerImpl;
 import org.apache.thrift.server.TServer;
         import org.apache.thrift.server.TServer.Args;
         import org.apache.thrift.server.TSimpleServer;
@@ -36,13 +37,13 @@ import org.apache.thrift.transport.TTransportException;
 
 public class ThriftServer {
 
-    public static BallotHandler handler;
+    public static PaxosMessengerImpl handler;
 
     public static Ballot.Processor processor;
 
-    public static void startThriftServer() {
+    public static void startThriftServer(String nodeUID) {
         try {
-            handler = new BallotHandler();
+            handler = new PaxosMessengerImpl(nodeUID);
             processor = new Ballot.Processor(handler);
 
             Runnable simple = new Runnable() {

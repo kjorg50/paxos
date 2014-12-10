@@ -2,15 +2,18 @@ package edu.ucsb.cs;
 
 import java.io.*;
 import java.net.*;
+import java.util.List;
 
 import cocagne.paxos.essential.ProposalID;
 import cocagne.paxos.functional.HeartbeatCallback;
 import cocagne.paxos.functional.HeartbeatMessenger;
+import edu.ucsb.cs.thrift.Ballot;
+import org.apache.thrift.TException;
 
 /**
  * This class will handle the messaging between different nodes in the system
  */
-public class PaxosMessengerImpl implements HeartbeatMessenger{
+public class PaxosMessengerImpl implements HeartbeatMessenger, Ballot.Iface{
 
     public static final String SERVER_URL = "127.0.0.1";
     public static final int PORT = 5050;
@@ -107,5 +110,40 @@ public class PaxosMessengerImpl implements HeartbeatMessenger{
 
     public void onLeadershipChange(String previousLeaderUID, String newLeaderUID){
         // record in log the change in leadership
+    }
+
+    @Override
+    public void prepare(long ballotNumber, long myId) throws TException {
+
+    }
+
+    @Override
+    public void ack(long ballotNumber, long acceptedNumber, long acceptedVal) throws TException {
+
+    }
+
+    @Override
+    public void accept(long ballotNumber, long leaderVal) throws TException {
+
+    }
+
+    @Override
+    public void accepted(long ballotNumber, long val) throws TException {
+
+    }
+
+    @Override
+    public void decide(long ballotNumber, long value) throws TException {
+        System.out.println("In decide(): ballot " + ballotNumber + " value " + value);
+    }
+
+    @Override
+    public List<Long> update(long lastAcceptedBallot) throws TException {
+        return null;
+    }
+
+    @Override
+    public boolean isLeader() throws TException {
+        return false;
     }
 }

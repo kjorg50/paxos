@@ -30,7 +30,7 @@ public class PaxosHandler {
         transactions = new Stack<Transaction>();
         balance = 0.0;
 
-        ThriftServer.startThriftServer();
+        ThriftServer.startThriftServer(nodeUID);
     }
 
     public void deposit(double amount){
