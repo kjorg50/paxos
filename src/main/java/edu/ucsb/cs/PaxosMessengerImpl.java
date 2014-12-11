@@ -301,10 +301,12 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
     public void onLeadershipLost(){
         // record in log the loss of leadership by nodeUID
+        log.debug("onLeadershipLost: " + nodeUID + " lost leadership");
     }
 
     public void onLeadershipChange(String previousLeaderUID, String newLeaderUID){
         // record in log the change in leadership
+        log.debug("onLeadershipChange: previousLeader " + previousLeaderUID + ", newLeader " + newLeaderUID);
     }
 
 }
