@@ -22,9 +22,15 @@ public class Executor implements Runnable{
     private int lastExecuted = 0;
     private Log log = LogFactory.getLog(Executor.class);
 
-    Executor(String nodeUID){
+    private static final Executor instance = new Executor();
+
+    public static Executor getInstance() {
+        return instance;
+    }
+
+    private Executor(){
         PrintWriter out=null;
-        BANK_FILENAME = "bank_" +nodeUID;
+        BANK_FILENAME = "bank_" + Main.nodeNumber;
         try {
             out = new PrintWriter(new BufferedWriter(new FileWriter(BANK_FILENAME, true)));
         } catch (IOException e) {

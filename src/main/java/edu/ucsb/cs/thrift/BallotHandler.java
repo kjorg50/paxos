@@ -2,7 +2,10 @@ package edu.ucsb.cs.thrift;
 
 import cocagne.paxos.essential.ProposalID;
 import cocagne.paxos.functional.HeartbeatNode;
+import edu.ucsb.cs.Executor;
+import edu.ucsb.cs.Main;
 import edu.ucsb.cs.PaxosHandler;
+import edu.ucsb.cs.PaxosMessengerImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.thrift.TException;
@@ -19,15 +22,26 @@ public class BallotHandler implements Ballot.Iface{
     public BallotHandler(HeartbeatNode _heartbeatNode){
         heartbeatNode = _heartbeatNode;
     }
+
+    public void setHeartbeatNode(HeartbeatNode hbn) {
+        this.heartbeatNode = hbn;
+    }
     /*
         ==============================================================
         Thrift methods' implementation
         ==============================================================
      */
 
+    public static final int MAJORITY = 2;
+
     @Override
     public void prepare(String myId, ThriftProposalID propID) throws TException {
         log.debug("prepare: myId " + myId + ", propID " + propID);
+        PaxosMessengerImpl messenger = new PaxosMessengerImpl(Main.nodeNumber, Executor.getInstance());
+        if (!myId.equals(Main.nodeNumber)) {
+            HeartbeatNode hbn = new HeartbeatNode(messenger, Main.nodeNumber,MAJORITY,null,1000,5000);
+            this.heartbeatNode = hbn;
+        }
         heartbeatNode.receivePrepare(myId, new ProposalID(propID.getBallotNumber(), propID.getUid()));
     }
 

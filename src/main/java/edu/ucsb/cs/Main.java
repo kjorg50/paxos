@@ -5,6 +5,7 @@ import java.util.Stack;
 import java.util.concurrent.ExecutorService;
 
 import cocagne.paxos.functional.HeartbeatNode;
+import edu.ucsb.cs.thrift.BallotHandler;
 import edu.ucsb.cs.thrift.ThriftClient;
 import edu.ucsb.cs.thrift.ThriftServer;
 import edu.ucsb.cs.thrift.Transaction;
@@ -30,22 +31,24 @@ public class Main {
     private HeartbeatNode heartbeatNode;
     private Stack<Transaction> transactions;
     private Double balance;
-    private Executor executor;
+    //private Executor executor;
 
-
+    private BallotHandler ballotHandler;
 
 
     public void init(String nodeUID) {
         ExecutorService es = java.util.concurrent.Executors.newSingleThreadExecutor();
-        executor = new Executor(nodeUID);
-        es.submit(executor);
+        //executor = new Executor(nodeUID);
+        es.submit(Executor.getInstance());
 
-        messenger = new PaxosMessengerImpl(nodeUID, executor);
+        messenger = new PaxosMessengerImpl(nodeUID, Executor.getInstance());
         heartbeatNode = new HeartbeatNode(messenger,nodeUID,MAJORITY,null,1000,5000);
         transactions = new Stack<Transaction>();
         balance = 0.0;
 
-        ThriftServer.startThriftServer(heartbeatNode, nodeNumber);
+
+        this.ballotHandler = new BallotHandler(heartbeatNode);
+        ThriftServer.startThriftServer(heartbeatNode, ballotHandler, nodeNumber);
 
         System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5\n Print \t\t 6\n");
         Scanner sc = new Scanner(System.in);
@@ -108,21 +111,23 @@ public class Main {
     }
 
     public void deposit(int amount){
-        Transaction transaction = new Transaction(executor.getLastExecuted()+1, amount);
-        heartbeatNode.setProposal(transaction);
-        heartbeatNode.prepare(); // run paxos
-        return;
+        startPaxos(amount);
     }
 
     public void withdraw(int amount){
-        Transaction transaction = new Transaction(executor.getLastExecuted()+1, -amount);
-        heartbeatNode.setProposal(transaction);
-        heartbeatNode.prepare(); // run paxos
-        return;
+        startPaxos(-1 * amount);
+    }
+
+    private void startPaxos(int amount) {
+        Transaction transaction = new Transaction(Executor.getInstance().getLastExecuted()+1, amount);
+        HeartbeatNode hbn = new HeartbeatNode(messenger,nodeNumber,MAJORITY,null,1000,5000);
+        hbn.setProposal(transaction);
+        this.ballotHandler.setHeartbeatNode(hbn);
+        hbn.prepare(); // run paxos
     }
 
     public int getBalance(){
-       return executor.getBalance();
+       return Executor.getInstance().getBalance();
     }
 
     public void fail(){
@@ -136,7 +141,7 @@ public class Main {
     }
 
     public void print(){
-        executor.print();
+        Executor.getInstance().print();
     }
 
     public static void main(String[] args){

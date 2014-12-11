@@ -136,7 +136,7 @@ public class HeartbeatNode extends PracticalNode {
 	
 	@Override
 	public void receivePrepare(String fromUID, ProposalID proposalID) {
-		log.debug("prepare: fromUID " + fromUID + ", proposalID.getUID() " + proposalID.getUID() + ", proposalID.getNumber "  + proposalID.getNumber());
+		log.debug("receivePrepare: fromUID " + fromUID + ", proposalID.getUID() " + proposalID.getUID() + ", proposalID.getNumber "  + proposalID.getNumber());
 		super.receivePrepare(fromUID, proposalID);
 		if (acceptor.persistenceRequired()){
 			acceptor.persisted();
