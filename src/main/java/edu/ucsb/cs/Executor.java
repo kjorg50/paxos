@@ -17,13 +17,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Executor implements Runnable{
 
 
-    private static final String BANK_FILENAME = "bank";
+    private String BANK_FILENAME;
     List<Transaction> pendingTransactions = new ArrayList<Transaction>();
     private int lastExecuted = 0;
     private Log log = LogFactory.getLog(Executor.class);
 
-    Executor(){
+    Executor(String nodeUID){
         PrintWriter out=null;
+        BANK_FILENAME = "bank_" +nodeUID;
         try {
             out = new PrintWriter(new BufferedWriter(new FileWriter(BANK_FILENAME, true)));
         } catch (IOException e) {
@@ -46,16 +47,13 @@ public class Executor implements Runnable{
         try {
             while(true) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 for (Transaction t : pendingTransactions) {
                     if ((lastExecuted + 1) == t.getLineNumber()) {
-                        // execute
                         applyTransaction(t);
-                        lastExecuted++;
-                        pendingTransactions.remove(t);
                         break;
                     }
                 }
@@ -65,12 +63,14 @@ public class Executor implements Runnable{
         }
     }
 
-    private void applyTransaction(Transaction t) {
+    private synchronized void applyTransaction(Transaction t) {
         PrintWriter out = null;
         try {
             out = new PrintWriter(new BufferedWriter(new FileWriter(BANK_FILENAME, true)));
             out.println(t.getDelta());
-            log.debug("applyTransaction: Added value " + t.getDelta() + " to the log file" );
+            lastExecuted++;
+            pendingTransactions.remove(t);
+            log.debug("applyTransaction: Added value " + t.getDelta() + " to the log file");
         } catch (IOException e) {
             log.error("applyTransaction: Exception writing the file." + e.getMessage());
         } finally {
@@ -127,6 +127,7 @@ public class Executor implements Runnable{
                 log.error("findLast: " + e.getMessage());
             }
         }
+        log.debug("&&& findLast: Lines in this file : " + lines);
         return lines;
     }
 

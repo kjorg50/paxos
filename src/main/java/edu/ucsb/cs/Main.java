@@ -37,7 +37,7 @@ public class Main {
 
     public void init(String nodeUID) {
         ExecutorService es = java.util.concurrent.Executors.newSingleThreadExecutor();
-        executor = new Executor();
+        executor = new Executor(nodeUID);
         es.submit(executor);
 
         messenger = new PaxosMessengerImpl(nodeUID, executor);
@@ -108,14 +108,14 @@ public class Main {
     }
 
     public void deposit(int amount){
-        Transaction transaction = new Transaction(executor.getLastExecuted(), amount);
+        Transaction transaction = new Transaction(executor.getLastExecuted()+1, amount);
         heartbeatNode.setProposal(transaction);
         heartbeatNode.prepare(); // run paxos
         return;
     }
 
     public void withdraw(int amount){
-        Transaction transaction = new Transaction(executor.getLastExecuted(), -amount);
+        Transaction transaction = new Transaction(executor.getLastExecuted()+1, -amount);
         heartbeatNode.setProposal(transaction);
         heartbeatNode.prepare(); // run paxos
         return;

@@ -116,7 +116,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
             transport.close();
         } catch (TException x) {
             x.printStackTrace();
-            log.error("sendPromise: Error sending the promise. See exception \n"+ x);
+            log.error("sendPromise: Error sending the promise. See exception \n" + x);
         }
         log.debug("sendPromise: Promise sent to " + proposerUID);
     }
@@ -152,7 +152,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
                     transport.close();
                 } catch (TException x) {
                     x.printStackTrace();
-                    log.error("doSendAccept: Error sending the accept. See exception \n"+ x);
+                    log.error("doSendAccept: Error sending the accept. See exception \n" + x);
                 }
             }
         });
@@ -191,7 +191,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
                     transport.close();
                 } catch (TException x) {
                     x.printStackTrace();
-                    log.error("doSendAccepted: Error sending the accepted. See exception \n"+ x);
+                    log.error("doSendAccepted: Error sending the accepted. See exception \n" + x);
                 }
             }
         });

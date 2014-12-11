@@ -3,11 +3,14 @@ package cocagne.paxos.essential;
  * Based on the code from https://github.com/cocagne/paxos
  */
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.HashMap;
 
 
 public class EssentialLearnerImpl implements EssentialLearner {
-	
+	private Log log = LogFactory.getLog(EssentialLearnerImpl.class);
 	class Proposal {
 		int    acceptCount;
 		int    retentionCount;
@@ -40,15 +43,17 @@ public class EssentialLearnerImpl implements EssentialLearner {
 	@Override
 	public void receiveAccepted(String fromUID, ProposalID proposalID,
 			Object acceptedValue) {
-		
+		log.debug("receiveAccepted: fromUID " + fromUID + ", proposalID " + proposalID + ", acceptedValue " + acceptedValue);
 		if (isComplete())
 			return;
 
 		ProposalID oldPID = acceptors.get(fromUID);
 		
 		// if it is an old proposal, just ignore this message
-		if (oldPID != null && !proposalID.isGreaterThan(oldPID))
+		if (oldPID != null && !proposalID.isGreaterThan(oldPID)) {
+			log.debug("receiveAccepted: I'm true: oldPID != null && !proposalID.isGreaterThan(oldPID)");
 			return;
+		}
 		
 		// otherwise, add it to the acceptors
 		acceptors.put(fromUID, proposalID);
@@ -75,6 +80,8 @@ public class EssentialLearnerImpl implements EssentialLearner {
         	acceptors.clear();
         	
         	messenger.onResolution(proposalID, acceptedValue);
+			// TODO remove?
+			finalValue = null;
         }
 	}
 

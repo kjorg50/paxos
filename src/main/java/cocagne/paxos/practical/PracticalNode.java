@@ -44,6 +44,7 @@ public class PracticalNode implements PracticalProposer, PracticalAcceptor, Esse
 	@Override
 	public void receiveAccepted(String fromUID, ProposalID proposalID,
 			Object acceptedValue) {
+		log.debug("receiveAccepted: fromUID " + fromUID + ", proposalID " + proposalID + ", acceptedValue " + acceptedValue);
 		learner.receiveAccepted(fromUID, proposalID, acceptedValue);
 
 	}
@@ -126,7 +127,6 @@ public class PracticalNode implements PracticalProposer, PracticalAcceptor, Esse
 //		if (acceptor.persistenceRequired()){
 //			acceptor.persisted();
 //		}
-
 	}
 	
 	public PracticalMessenger getMessenger() {
