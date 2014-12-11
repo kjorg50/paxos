@@ -71,6 +71,9 @@ public class PracticalNode implements PracticalProposer, PracticalAcceptor, Esse
 			Object value) {
 		log.debug("receiveAcceptRequest: fromUID " + fromUID + ", proposalID " + proposalID + ", value " + value);
 		acceptor.receiveAcceptRequest(fromUID, proposalID, value);
+//		if (acceptor.persistenceRequired()){
+//			acceptor.persisted();
+//		}
 	}
 	
 	public ProposalID getPromisedID() {
@@ -120,9 +123,9 @@ public class PracticalNode implements PracticalProposer, PracticalAcceptor, Esse
 		log.debug("receivePromise: fromUID " + fromUID + ", proposal " + proposalID +
 				", prevAcceptedID " +prevAcceptedID + ", prevAcceptedValue " + prevAcceptedValue);
 		proposer.receivePromise(fromUID, proposalID, prevAcceptedID, prevAcceptedValue);
-		if (acceptor.persistenceRequired()){
-			acceptor.persisted();
-		}
+//		if (acceptor.persistenceRequired()){
+//			acceptor.persisted();
+//		}
 
 	}
 	

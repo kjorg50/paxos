@@ -138,9 +138,9 @@ public class HeartbeatNode extends PracticalNode {
 	public void receivePrepare(String fromUID, ProposalID proposalID) {
 		log.debug("prepare: fromUID " + fromUID + ", proposalID.getUID() " + proposalID.getUID() + ", proposalID.getNumber "  + proposalID.getNumber());
 		super.receivePrepare(fromUID, proposalID);
-		if (acceptor.persistenceRequired()){
-			acceptor.persisted();
-		}
+//		if (acceptor.persistenceRequired()){
+//			acceptor.persisted();
+//		}
 		// If the prepare came from another node, update the timestamp
 		if (!proposalID.equals(getProposalID()))
 			lastPrepareTimestamp = timestamp();
