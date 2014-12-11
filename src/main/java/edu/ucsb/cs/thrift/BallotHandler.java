@@ -27,7 +27,7 @@ public class BallotHandler implements Ballot.Iface{
 
     @Override
     public void prepare(String myId, ThriftProposalID propID) throws TException {
-        log.debug("prepare: myId " + myId + ", propID " + propID.toString());
+        log.debug("prepare: myId " + myId + ", propID " + propID);
         heartbeatNode.receivePrepare(myId, new ProposalID((int) propID.getBallotNumber(), propID.getUid()));
     }
 
@@ -50,7 +50,7 @@ public class BallotHandler implements Ballot.Iface{
 
     @Override
     public void accept(String myId, ThriftProposalID propID, long acceptedValue) throws TException {
-
+        log.debug("accept: myId " + myId + ", propID " + propID + ", acceptedValue " + acceptedValue);
     }
 
     @Override

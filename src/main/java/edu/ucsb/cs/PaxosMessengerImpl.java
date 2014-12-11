@@ -103,12 +103,34 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
         } catch (TException x) {
             x.printStackTrace();
         }
-        log.debug("sendPromise: Promise sent to " + proposerUID );
+        log.debug("sendPromise: Promise sent to " + proposerUID);
     }
 
     public void sendAccept(ProposalID proposalID, Object proposalValue){
+        log.debug("sendAccept: proposalID" + proposalID + ", proposalValue " + proposalValue);
         // for address in list
         //      connection( address.recvAcceptRequest( nodeUID, proposalID, proposalValue)
+
+        for (int i = 0; i < conf.getMessengerConfigurations().size(); i++) {
+            Messenger m = conf.getOneMessenger(i);
+
+            try {
+                TTransport transport;
+                log.debug("sendAccept: sending to " + m.getAddress());
+                transport = new TSocket(m.getAddress(), m.getPort());
+                transport.open();
+
+                TProtocol protocol = new TBinaryProtocol(transport);
+                Ballot.Client client = new Ballot.Client(protocol);
+
+                client.accept(nodeUID,new ThriftProposalID(proposalID.getNumber(),proposalID.getUID()), (Long)proposalValue);
+
+                transport.close();
+            } catch (TException x) {
+                x.printStackTrace();
+            }
+        }
+
     }
 
     public void sendAccepted(ProposalID proposalID, Object acceptedValue){
@@ -149,7 +171,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
      */
     public void onLeadershipAcquired(){
         // Add to log the acquisition of leadership by nodeUID
-        log.debug("onLeadershipAcquired: " + nodeUID + "has become the leader");
+        log.debug("onLeadershipAcquired: " + nodeUID + " has become the leader");
     }
 
     /* -----------------------------------------------
