@@ -123,7 +123,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
                 TProtocol protocol = new TBinaryProtocol(transport);
                 Ballot.Client client = new Ballot.Client(protocol);
 
-                client.accept(nodeUID,new ThriftProposalID(proposalID.getNumber(),proposalID.getUID()), (Long)proposalValue);
+                client.accept(nodeUID, new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()), (Long) proposalValue);
 
                 transport.close();
             } catch (TException x) {
@@ -134,8 +134,30 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
     }
 
     public void sendAccepted(ProposalID proposalID, Object acceptedValue){
+        log.debug("sendAccepted: proposalID" + proposalID + ", acceptedValue " + acceptedValue);
         // send to leader? or just broadcast to everyone?
         //      connection( address.recvAccepted( nodeUID, proposalID, acceptedValue)
+
+        for (int i = 0; i < conf.getMessengerConfigurations().size(); i++) {
+            Messenger m = conf.getOneMessenger(i);
+
+            try {
+                TTransport transport;
+                log.debug("sendAccepted: sending to " + m.getAddress());
+                transport = new TSocket(m.getAddress(), m.getPort());
+                transport.open();
+
+                TProtocol protocol = new TBinaryProtocol(transport);
+                Ballot.Client client = new Ballot.Client(protocol);
+
+                client.accepted(nodeUID, new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()), (Long) acceptedValue);
+
+                transport.close();
+            } catch (TException x) {
+                x.printStackTrace();
+            }
+        }
+
     }
 
     /**

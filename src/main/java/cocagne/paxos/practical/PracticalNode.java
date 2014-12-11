@@ -69,6 +69,7 @@ public class PracticalNode implements PracticalProposer, PracticalAcceptor, Esse
 	@Override
 	public void receiveAcceptRequest(String fromUID, ProposalID proposalID,
 			Object value) {
+		log.debug("receiveAcceptRequest: fromUID " + fromUID + ", proposalID " + proposalID + ", value " + value);
 		acceptor.receiveAcceptRequest(fromUID, proposalID, value);
 	}
 	

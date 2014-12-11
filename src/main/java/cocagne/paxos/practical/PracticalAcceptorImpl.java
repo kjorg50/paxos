@@ -61,6 +61,8 @@ public class PracticalAcceptorImpl extends EssentialAcceptorImpl implements Prac
 	@Override
 	public void receiveAcceptRequest(String fromUID, ProposalID proposalID,
 			Object value) {
+		log.debug("receiveAcceptRequest: fromUID " + fromUID + ", proposalID " + proposalID + ", value " + value);
+
 		// if this matches our already accepted proposal, send the "accepted" message again
 		if (acceptedID != null && proposalID.equals(acceptedID) && acceptedValue.equals(value)) {
 			if (active)

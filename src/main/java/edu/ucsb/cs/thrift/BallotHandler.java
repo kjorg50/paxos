@@ -51,10 +51,14 @@ public class BallotHandler implements Ballot.Iface{
     @Override
     public void accept(String myId, ThriftProposalID propID, long acceptedValue) throws TException {
         log.debug("accept: myId " + myId + ", propID " + propID + ", acceptedValue " + acceptedValue);
+        heartbeatNode.receiveAcceptRequest(myId,
+                new ProposalID((int) propID.getBallotNumber(), propID.getUid()),
+                acceptedValue);
     }
 
     @Override
     public void accepted(String myId, ThriftProposalID propID, long acceptedValue) throws TException {
+        log.debug("accepted: myId " + myId + ", propID " + propID + ", acceptedValue " + acceptedValue);
 
     }
 
