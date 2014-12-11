@@ -5,11 +5,14 @@ package cocagne.paxos.practical;
 
 import cocagne.paxos.essential.EssentialProposerImpl;
 import cocagne.paxos.essential.ProposalID;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class PracticalProposerImpl extends EssentialProposerImpl implements PracticalProposer {
 
 	private boolean leader = false;
 	private boolean active = true;
+	private Log log = LogFactory.getLog(PracticalProposerImpl.class);
 	
 	public PracticalProposerImpl(PracticalMessenger messenger, String proposerUID,
 			int quorumSize) {
@@ -87,7 +90,8 @@ public class PracticalProposerImpl extends EssentialProposerImpl implements Prac
 	@Override
 	public void receivePromise(String fromUID, ProposalID proposalID,
 			ProposalID prevAcceptedID, Object prevAcceptedValue) {
-		
+		log.debug("receivePromise: fromUID " + fromUID + ", proposal " + proposalID +
+				", prevAcceptedID " +prevAcceptedID + ", prevAcceptedValue " + prevAcceptedValue);
 		observeProposal(fromUID, proposalID);
 		
 		// if you are leader then you know you already have enough promises

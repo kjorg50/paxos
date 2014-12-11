@@ -6,12 +6,15 @@ package cocagne.paxos.practical;
 import cocagne.paxos.essential.EssentialLearner;
 import cocagne.paxos.essential.EssentialLearnerImpl;
 import cocagne.paxos.essential.ProposalID;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class PracticalNode implements PracticalProposer, PracticalAcceptor, EssentialLearner {
 
 	protected PracticalProposerImpl proposer;
 	protected PracticalAcceptorImpl acceptor;
 	protected EssentialLearnerImpl  learner;
+	private Log log = LogFactory.getLog(PracticalNode.class);
 	
 	public PracticalNode(PracticalMessenger messenger, String proposerUID,
 			int quorumSize) {
@@ -113,6 +116,8 @@ public class PracticalNode implements PracticalProposer, PracticalAcceptor, Esse
 	@Override
 	public void receivePromise(String fromUID, ProposalID proposalID,
 			ProposalID prevAcceptedID, Object prevAcceptedValue) {
+		log.debug("receivePromise: fromUID " + fromUID + ", proposal " + proposalID +
+				", prevAcceptedID " +prevAcceptedID + ", prevAcceptedValue " + prevAcceptedValue);
 		proposer.receivePromise(fromUID, proposalID, prevAcceptedID, prevAcceptedValue);
 		if (acceptor.persistenceRequired()){
 			acceptor.persisted();

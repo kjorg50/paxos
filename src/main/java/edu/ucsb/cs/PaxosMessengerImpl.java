@@ -149,6 +149,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
      */
     public void onLeadershipAcquired(){
         // Add to log the acquisition of leadership by nodeUID
+        log.debug("onLeadershipAcquired: " + nodeUID + "has become the leader");
     }
 
     /* -----------------------------------------------

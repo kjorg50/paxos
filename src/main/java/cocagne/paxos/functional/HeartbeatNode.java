@@ -150,7 +150,8 @@ public class HeartbeatNode extends PracticalNode {
 	public void receivePromise(String fromUID, ProposalID proposalID,
 			ProposalID prevAcceptedID, Object prevAcceptedValue) {
 		String preLeaderUID = leaderUID;
-		
+		log.debug("receivePromise: fromUID " + fromUID + ", proposal " + proposalID +
+					", prevAcceptedID " +prevAcceptedID + ", prevAcceptedValue " + prevAcceptedValue);
 		super.receivePromise(fromUID, proposalID, prevAcceptedID, prevAcceptedValue);
 
 		// if I now am the leader and there was no previous leader
