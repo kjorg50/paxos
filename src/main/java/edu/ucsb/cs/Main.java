@@ -22,7 +22,7 @@ public class Main {
     public static final int FAIL = 4;
     public static final int UNFAIL = 5;
     public static final int PRINT = 6;
-    public static final int MAJORITY=2; //TODO quorum size
+    public static final int MAJORITY=3; //TODO quorum size
     public static String nodeNumber;
     private Log log = LogFactory.getLog(Main.class);
     public static PaxosHandler handler;
