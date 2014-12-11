@@ -28,7 +28,7 @@ public class BallotHandler implements Ballot.Iface{
     @Override
     public void prepare(String myId, ThriftProposalID propID) throws TException {
         log.debug("prepare: myId " + myId + ", propID " + propID);
-        heartbeatNode.receivePrepare(myId, new ProposalID((int) propID.getBallotNumber(), propID.getUid()));
+        heartbeatNode.receivePrepare(myId, new ProposalID(propID.getBallotNumber(), propID.getUid()));
     }
 
     /**
@@ -40,30 +40,26 @@ public class BallotHandler implements Ballot.Iface{
      * @throws TException
      */
     @Override
-    public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, long acceptedValue) throws TException {
+    public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, Transaction acceptedValue) throws TException {
         log.debug("promise: myId " + myId + ", propID " + propID + ", prevPropId " + prevPropId + ", acceptedValue " + acceptedValue);
         heartbeatNode.receivePromise(myId,
-                new ProposalID((int) propID.getBallotNumber(), propID.getUid()),
-                new ProposalID((int) prevPropId.getBallotNumber(), prevPropId.getUid()),
+                new ProposalID(propID.getBallotNumber(), propID.getUid()),
+                new ProposalID(prevPropId.getBallotNumber(), prevPropId.getUid()),
                 acceptedValue);
     }
 
     @Override
-    public void accept(String myId, ThriftProposalID propID, long acceptedValue) throws TException {
+    public void accept(String myId, ThriftProposalID propID, Transaction acceptedValue) throws TException {
         log.debug("accept: myId " + myId + ", propID " + propID + ", acceptedValue " + acceptedValue);
         heartbeatNode.receiveAcceptRequest(myId,
-                new ProposalID((int) propID.getBallotNumber(), propID.getUid()),
+                new ProposalID(propID.getBallotNumber(), propID.getUid()),
                 acceptedValue);
     }
 
     @Override
-    public void accepted(String myId, ThriftProposalID propID, long acceptedValue) throws TException {
+    public void accepted(String myId, ThriftProposalID propID, Transaction acceptedValue) throws TException {
         log.debug("accepted: myId " + myId + ", propID " + propID + ", acceptedValue " + acceptedValue);
-
-    }
-
-    @Override
-    public void decide(ThriftProposalID propID, long value) throws TException {
+        heartbeatNode.receiveAccepted(myId, new ProposalID(propID.getBallotNumber(), propID.getUid()), acceptedValue);
 
     }
 
@@ -83,7 +79,7 @@ public class BallotHandler implements Ballot.Iface{
     }
 
     @Override
-    public List<Long> update(long lastAcceptedBallot) throws TException {
+    public List<Transaction> update(int lastAcceptedBallot) throws TException {
         return null;
     }
 }

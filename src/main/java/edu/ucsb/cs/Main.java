@@ -2,10 +2,12 @@ package edu.ucsb.cs;
 
 import java.util.Scanner;
 import java.util.Stack;
+import java.util.concurrent.ExecutorService;
 
 import cocagne.paxos.functional.HeartbeatNode;
 import edu.ucsb.cs.thrift.ThriftClient;
 import edu.ucsb.cs.thrift.ThriftServer;
+import edu.ucsb.cs.thrift.Transaction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -28,13 +30,20 @@ public class Main {
     private Stack<Transaction> transactions;
     private Double balance;
 
+
+
+
     public void init(String nodeUID) {
-        messenger = new PaxosMessengerImpl(nodeUID);
+        ExecutorService es = java.util.concurrent.Executors.newSingleThreadExecutor();
+        Executor executor = new Executor();
+        es.submit(executor);
+
+        messenger = new PaxosMessengerImpl(nodeUID, executor);
         heartbeatNode = new HeartbeatNode(messenger,nodeUID,MAJORITY,null,1000,5000);
         transactions = new Stack<Transaction>();
         balance = 0.0;
 
-        ThriftServer.startThriftServer(heartbeatNode);
+        ThriftServer.startThriftServer(heartbeatNode, nodeNumber);
 
         System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5 \n");
         Scanner sc = new Scanner(System.in);
@@ -101,7 +110,7 @@ public class Main {
 //            Double prev = transactions.peek().getAmount();
 //            newTxn = new Transaction(prev, prev+amount);
 //        }
-        heartbeatNode.setProposal(new Integer(42));
+        heartbeatNode.setProposal(new Transaction(1,42));
         heartbeatNode.prepare(); // run paxos
 //
 //        while(!heartbeatNode.isComplete()){
@@ -121,33 +130,33 @@ public class Main {
     }
 
     public void withdraw(double amount){
-        Transaction newTxn;
-        if(transactions.empty()) {
-            newTxn = new Transaction(0.0, -amount);
-        } else {
-            Double prev = transactions.peek().getAmount();
-            newTxn = new Transaction(prev, prev-amount);
-        }
-        heartbeatNode.setProposal(newTxn);
-        heartbeatNode.prepare(); // run paxos
-
-        while(!heartbeatNode.isComplete()){
-            // timeout after certain amount?
-            if(heartbeatNode.isComplete())
-                break;
-        }
-        Transaction result = (Transaction)heartbeatNode.getFinalValue();
-
-        transactions.add(result);
-
-        // TODO - add logging
-
-        return;
+//        Transaction newTxn;
+//        if(transactions.empty()) {
+//            newTxn = new Transaction(0.0, 12);
+//        } else {
+//            Double prev = transactions.peek().getAmount();
+//            newTxn = new Transaction(prev, prev-amount);
+//        }
+//        heartbeatNode.setProposal(newTxn);
+//        heartbeatNode.prepare(); // run paxos
+//
+//        while(!heartbeatNode.isComplete()){
+//            // timeout after certain amount?
+//            if(heartbeatNode.isComplete())
+//                break;
+//        }
+//        Transaction result = (Transaction)heartbeatNode.getFinalValue();
+//
+//        transactions.add(result);
+//
+//        // TODO - add logging
+//
+//        return;
     }
 
     public double getBalance(){
-        // TODO - add logging
-        return transactions.peek().getAmount();
+//        // TODO - add logging
+        return 0;
     }
 
     public void fail(){

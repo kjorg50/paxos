@@ -25,6 +25,7 @@ package edu.ucsb.cs.thrift;
  */
 
 import cocagne.paxos.functional.HeartbeatNode;
+import edu.ucsb.cs.MessengerConf;
 import edu.ucsb.cs.PaxosHandler;
 import edu.ucsb.cs.PaxosMessengerImpl;
 import org.apache.thrift.server.TServer;
@@ -43,17 +44,18 @@ public class ThriftServer {
 
     public static Ballot.Processor processor;
 
-    public static void startThriftServer(HeartbeatNode heartbeatNode) {
+    public static void startThriftServer(HeartbeatNode heartbeatNode, final String nodeNumber) {
         try {
             handler = new BallotHandler(heartbeatNode);
             processor = new Ballot.Processor(handler);
+            final MessengerConf conf = new MessengerConf();
 
             Runnable simple = new Runnable() {
                 public void run() {
 
                     TServerTransport serverTransport = null;
                     try {
-                        serverTransport = new TServerSocket(9090);
+                        serverTransport = new TServerSocket(conf.getOneMessenger(Integer.parseInt(nodeNumber)).getPort());
                     } catch (TTransportException e) {
                         e.printStackTrace();
                     }

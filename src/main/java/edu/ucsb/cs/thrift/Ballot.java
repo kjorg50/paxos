@@ -47,13 +47,11 @@ public class Ballot {
          */
         public void prepare(String myId, ThriftProposalID propID) throws org.apache.thrift.TException;
 
-        public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, long acceptedValue) throws org.apache.thrift.TException;
+        public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, Transaction acceptedValue) throws org.apache.thrift.TException;
 
-        public void accept(String myId, ThriftProposalID propID, long acceptedValue) throws org.apache.thrift.TException;
+        public void accept(String myId, ThriftProposalID propID, Transaction acceptedValue) throws org.apache.thrift.TException;
 
-        public void accepted(String myId, ThriftProposalID propID, long acceptedValue) throws org.apache.thrift.TException;
-
-        public void decide(ThriftProposalID propID, long value) throws org.apache.thrift.TException;
+        public void accepted(String myId, ThriftProposalID propID, Transaction acceptedValue) throws org.apache.thrift.TException;
 
         public void prepareNACK(String myId, ThriftProposalID propID, ThriftProposalID promisedID) throws org.apache.thrift.TException;
 
@@ -61,7 +59,7 @@ public class Ballot {
 
         public void heartbeat(String myId, ThriftProposalID leaderPropID) throws org.apache.thrift.TException;
 
-        public List<Long> update(long lastAcceptedBallot) throws org.apache.thrift.TException;
+        public List<Transaction> update(int lastAcceptedBallot) throws org.apache.thrift.TException;
 
     }
 
@@ -69,13 +67,11 @@ public class Ballot {
 
         public void prepare(String myId, ThriftProposalID propID, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-        public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, long acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+        public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, Transaction acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-        public void accept(String myId, ThriftProposalID propID, long acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+        public void accept(String myId, ThriftProposalID propID, Transaction acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-        public void accepted(String myId, ThriftProposalID propID, long acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
-
-        public void decide(ThriftProposalID propID, long value, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+        public void accepted(String myId, ThriftProposalID propID, Transaction acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
         public void prepareNACK(String myId, ThriftProposalID propID, ThriftProposalID promisedID, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -83,7 +79,7 @@ public class Ballot {
 
         public void heartbeat(String myId, ThriftProposalID leaderPropID, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-        public void update(long lastAcceptedBallot, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+        public void update(int lastAcceptedBallot, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     }
 
@@ -120,12 +116,12 @@ public class Ballot {
             sendBase("prepare", args);
         }
 
-        public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, long acceptedValue) throws org.apache.thrift.TException
+        public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, Transaction acceptedValue) throws org.apache.thrift.TException
         {
             send_promise(myId, propID, prevPropId, acceptedValue);
         }
 
-        public void send_promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, long acceptedValue) throws org.apache.thrift.TException
+        public void send_promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, Transaction acceptedValue) throws org.apache.thrift.TException
         {
             promise_args args = new promise_args();
             args.setMyId(myId);
@@ -135,12 +131,12 @@ public class Ballot {
             sendBase("promise", args);
         }
 
-        public void accept(String myId, ThriftProposalID propID, long acceptedValue) throws org.apache.thrift.TException
+        public void accept(String myId, ThriftProposalID propID, Transaction acceptedValue) throws org.apache.thrift.TException
         {
             send_accept(myId, propID, acceptedValue);
         }
 
-        public void send_accept(String myId, ThriftProposalID propID, long acceptedValue) throws org.apache.thrift.TException
+        public void send_accept(String myId, ThriftProposalID propID, Transaction acceptedValue) throws org.apache.thrift.TException
         {
             accept_args args = new accept_args();
             args.setMyId(myId);
@@ -149,31 +145,18 @@ public class Ballot {
             sendBase("accept", args);
         }
 
-        public void accepted(String myId, ThriftProposalID propID, long acceptedValue) throws org.apache.thrift.TException
+        public void accepted(String myId, ThriftProposalID propID, Transaction acceptedValue) throws org.apache.thrift.TException
         {
             send_accepted(myId, propID, acceptedValue);
         }
 
-        public void send_accepted(String myId, ThriftProposalID propID, long acceptedValue) throws org.apache.thrift.TException
+        public void send_accepted(String myId, ThriftProposalID propID, Transaction acceptedValue) throws org.apache.thrift.TException
         {
             accepted_args args = new accepted_args();
             args.setMyId(myId);
             args.setPropID(propID);
             args.setAcceptedValue(acceptedValue);
             sendBase("accepted", args);
-        }
-
-        public void decide(ThriftProposalID propID, long value) throws org.apache.thrift.TException
-        {
-            send_decide(propID, value);
-        }
-
-        public void send_decide(ThriftProposalID propID, long value) throws org.apache.thrift.TException
-        {
-            decide_args args = new decide_args();
-            args.setPropID(propID);
-            args.setValue(value);
-            sendBase("decide", args);
         }
 
         public void prepareNACK(String myId, ThriftProposalID propID, ThriftProposalID promisedID) throws org.apache.thrift.TException
@@ -217,20 +200,20 @@ public class Ballot {
             sendBase("heartbeat", args);
         }
 
-        public List<Long> update(long lastAcceptedBallot) throws org.apache.thrift.TException
+        public List<Transaction> update(int lastAcceptedBallot) throws org.apache.thrift.TException
         {
             send_update(lastAcceptedBallot);
             return recv_update();
         }
 
-        public void send_update(long lastAcceptedBallot) throws org.apache.thrift.TException
+        public void send_update(int lastAcceptedBallot) throws org.apache.thrift.TException
         {
             update_args args = new update_args();
             args.setLastAcceptedBallot(lastAcceptedBallot);
             sendBase("update", args);
         }
 
-        public List<Long> recv_update() throws org.apache.thrift.TException
+        public List<Transaction> recv_update() throws org.apache.thrift.TException
         {
             update_result result = new update_result();
             receiveBase(result, "update");
@@ -292,7 +275,7 @@ public class Ballot {
             }
         }
 
-        public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, long acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+        public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, Transaction acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
             checkReady();
             promise_call method_call = new promise_call(myId, propID, prevPropId, acceptedValue, resultHandler, this, ___protocolFactory, ___transport);
             this.___currentMethod = method_call;
@@ -303,8 +286,8 @@ public class Ballot {
             private String myId;
             private ThriftProposalID propID;
             private ThriftProposalID prevPropId;
-            private long acceptedValue;
-            public promise_call(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, long acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+            private Transaction acceptedValue;
+            public promise_call(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, Transaction acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
                 super(client, protocolFactory, transport, resultHandler, true);
                 this.myId = myId;
                 this.propID = propID;
@@ -332,7 +315,7 @@ public class Ballot {
             }
         }
 
-        public void accept(String myId, ThriftProposalID propID, long acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+        public void accept(String myId, ThriftProposalID propID, Transaction acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
             checkReady();
             accept_call method_call = new accept_call(myId, propID, acceptedValue, resultHandler, this, ___protocolFactory, ___transport);
             this.___currentMethod = method_call;
@@ -342,8 +325,8 @@ public class Ballot {
         public static class accept_call extends org.apache.thrift.async.TAsyncMethodCall {
             private String myId;
             private ThriftProposalID propID;
-            private long acceptedValue;
-            public accept_call(String myId, ThriftProposalID propID, long acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+            private Transaction acceptedValue;
+            public accept_call(String myId, ThriftProposalID propID, Transaction acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
                 super(client, protocolFactory, transport, resultHandler, true);
                 this.myId = myId;
                 this.propID = propID;
@@ -369,7 +352,7 @@ public class Ballot {
             }
         }
 
-        public void accepted(String myId, ThriftProposalID propID, long acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+        public void accepted(String myId, ThriftProposalID propID, Transaction acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
             checkReady();
             accepted_call method_call = new accepted_call(myId, propID, acceptedValue, resultHandler, this, ___protocolFactory, ___transport);
             this.___currentMethod = method_call;
@@ -379,8 +362,8 @@ public class Ballot {
         public static class accepted_call extends org.apache.thrift.async.TAsyncMethodCall {
             private String myId;
             private ThriftProposalID propID;
-            private long acceptedValue;
-            public accepted_call(String myId, ThriftProposalID propID, long acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+            private Transaction acceptedValue;
+            public accepted_call(String myId, ThriftProposalID propID, Transaction acceptedValue, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
                 super(client, protocolFactory, transport, resultHandler, true);
                 this.myId = myId;
                 this.propID = propID;
@@ -393,40 +376,6 @@ public class Ballot {
                 args.setMyId(myId);
                 args.setPropID(propID);
                 args.setAcceptedValue(acceptedValue);
-                args.write(prot);
-                prot.writeMessageEnd();
-            }
-
-            public void getResult() throws org.apache.thrift.TException {
-                if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-                    throw new IllegalStateException("Method call not finished!");
-                }
-                org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
-                org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-            }
-        }
-
-        public void decide(ThriftProposalID propID, long value, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
-            checkReady();
-            decide_call method_call = new decide_call(propID, value, resultHandler, this, ___protocolFactory, ___transport);
-            this.___currentMethod = method_call;
-            ___manager.call(method_call);
-        }
-
-        public static class decide_call extends org.apache.thrift.async.TAsyncMethodCall {
-            private ThriftProposalID propID;
-            private long value;
-            public decide_call(ThriftProposalID propID, long value, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-                super(client, protocolFactory, transport, resultHandler, true);
-                this.propID = propID;
-                this.value = value;
-            }
-
-            public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-                prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("decide", org.apache.thrift.protocol.TMessageType.ONEWAY, 0));
-                decide_args args = new decide_args();
-                args.setPropID(propID);
-                args.setValue(value);
                 args.write(prot);
                 prot.writeMessageEnd();
             }
@@ -548,7 +497,7 @@ public class Ballot {
             }
         }
 
-        public void update(long lastAcceptedBallot, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+        public void update(int lastAcceptedBallot, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
             checkReady();
             update_call method_call = new update_call(lastAcceptedBallot, resultHandler, this, ___protocolFactory, ___transport);
             this.___currentMethod = method_call;
@@ -556,8 +505,8 @@ public class Ballot {
         }
 
         public static class update_call extends org.apache.thrift.async.TAsyncMethodCall {
-            private long lastAcceptedBallot;
-            public update_call(long lastAcceptedBallot, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+            private int lastAcceptedBallot;
+            public update_call(int lastAcceptedBallot, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
                 super(client, protocolFactory, transport, resultHandler, false);
                 this.lastAcceptedBallot = lastAcceptedBallot;
             }
@@ -570,7 +519,7 @@ public class Ballot {
                 prot.writeMessageEnd();
             }
 
-            public List<Long> getResult() throws org.apache.thrift.TException {
+            public List<Transaction> getResult() throws org.apache.thrift.TException {
                 if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
                     throw new IllegalStateException("Method call not finished!");
                 }
@@ -597,7 +546,6 @@ public class Ballot {
             processMap.put("promise", new promise());
             processMap.put("accept", new accept());
             processMap.put("accepted", new accepted());
-            processMap.put("decide", new decide());
             processMap.put("prepareNACK", new prepareNACK());
             processMap.put("acceptNACK", new acceptNACK());
             processMap.put("heartbeat", new heartbeat());
@@ -677,25 +625,6 @@ public class Ballot {
 
             public org.apache.thrift.TBase getResult(I iface, accepted_args args) throws org.apache.thrift.TException {
                 iface.accepted(args.myId, args.propID, args.acceptedValue);
-                return null;
-            }
-        }
-
-        public static class decide<I extends Iface> extends org.apache.thrift.ProcessFunction<I, decide_args> {
-            public decide() {
-                super("decide");
-            }
-
-            public decide_args getEmptyArgsInstance() {
-                return new decide_args();
-            }
-
-            protected boolean isOneway() {
-                return true;
-            }
-
-            public org.apache.thrift.TBase getResult(I iface, decide_args args) throws org.apache.thrift.TException {
-                iface.decide(args.propID, args.value);
                 return null;
             }
         }
@@ -794,7 +723,6 @@ public class Ballot {
             processMap.put("promise", new promise());
             processMap.put("accept", new accept());
             processMap.put("accepted", new accepted());
-            processMap.put("decide", new decide());
             processMap.put("prepareNACK", new prepareNACK());
             processMap.put("acceptNACK", new acceptNACK());
             processMap.put("heartbeat", new heartbeat());
@@ -914,34 +842,6 @@ public class Ballot {
             }
         }
 
-        public static class decide<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, decide_args, Void> {
-            public decide() {
-                super("decide");
-            }
-
-            public decide_args getEmptyArgsInstance() {
-                return new decide_args();
-            }
-
-            public AsyncMethodCallback<Void> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
-                final org.apache.thrift.AsyncProcessFunction fcall = this;
-                return new AsyncMethodCallback<Void>() {
-                    public void onComplete(Void o) {
-                    }
-                    public void onError(Exception e) {
-                    }
-                };
-            }
-
-            protected boolean isOneway() {
-                return true;
-            }
-
-            public void start(I iface, decide_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws TException {
-                iface.decide(args.propID, args.value,resultHandler);
-            }
-        }
-
         public static class prepareNACK<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, prepareNACK_args, Void> {
             public prepareNACK() {
                 super("prepareNACK");
@@ -1026,7 +926,7 @@ public class Ballot {
             }
         }
 
-        public static class update<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, update_args, List<Long>> {
+        public static class update<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, update_args, List<Transaction>> {
             public update() {
                 super("update");
             }
@@ -1035,10 +935,10 @@ public class Ballot {
                 return new update_args();
             }
 
-            public AsyncMethodCallback<List<Long>> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
+            public AsyncMethodCallback<List<Transaction>> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
                 final org.apache.thrift.AsyncProcessFunction fcall = this;
-                return new AsyncMethodCallback<List<Long>>() {
-                    public void onComplete(List<Long> o) {
+                return new AsyncMethodCallback<List<Transaction>>() {
+                    public void onComplete(List<Transaction> o) {
                         update_result result = new update_result();
                         result.success = o;
                         try {
@@ -1072,7 +972,7 @@ public class Ballot {
                 return false;
             }
 
-            public void start(I iface, update_args args, org.apache.thrift.async.AsyncMethodCallback<List<Long>> resultHandler) throws TException {
+            public void start(I iface, update_args args, org.apache.thrift.async.AsyncMethodCallback<List<Transaction>> resultHandler) throws TException {
                 iface.update(args.lastAcceptedBallot,resultHandler);
             }
         }
@@ -1556,7 +1456,7 @@ public class Ballot {
         private static final org.apache.thrift.protocol.TField MY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("myId", org.apache.thrift.protocol.TType.STRING, (short)1);
         private static final org.apache.thrift.protocol.TField PROP_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("propID", org.apache.thrift.protocol.TType.STRUCT, (short)2);
         private static final org.apache.thrift.protocol.TField PREV_PROP_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("prevPropId", org.apache.thrift.protocol.TType.STRUCT, (short)3);
-        private static final org.apache.thrift.protocol.TField ACCEPTED_VALUE_FIELD_DESC = new org.apache.thrift.protocol.TField("acceptedValue", org.apache.thrift.protocol.TType.I64, (short)4);
+        private static final org.apache.thrift.protocol.TField ACCEPTED_VALUE_FIELD_DESC = new org.apache.thrift.protocol.TField("acceptedValue", org.apache.thrift.protocol.TType.STRUCT, (short)4);
 
         private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
         static {
@@ -1567,7 +1467,7 @@ public class Ballot {
         public String myId; // required
         public ThriftProposalID propID; // required
         public ThriftProposalID prevPropId; // required
-        public long acceptedValue; // required
+        public Transaction acceptedValue; // required
 
         /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -1637,8 +1537,6 @@ public class Ballot {
         }
 
         // isset id assignments
-        private static final int __ACCEPTEDVALUE_ISSET_ID = 0;
-        private byte __isset_bitfield = 0;
         public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
         static {
             Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -1649,7 +1547,7 @@ public class Ballot {
             tmpMap.put(_Fields.PREV_PROP_ID, new org.apache.thrift.meta_data.FieldMetaData("prevPropId", org.apache.thrift.TFieldRequirementType.DEFAULT,
                     new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ThriftProposalID.class)));
             tmpMap.put(_Fields.ACCEPTED_VALUE, new org.apache.thrift.meta_data.FieldMetaData("acceptedValue", org.apache.thrift.TFieldRequirementType.DEFAULT,
-                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64          , "int")));
+                    new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Transaction.class)));
             metaDataMap = Collections.unmodifiableMap(tmpMap);
             org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(promise_args.class, metaDataMap);
         }
@@ -1661,21 +1559,19 @@ public class Ballot {
                 String myId,
                 ThriftProposalID propID,
                 ThriftProposalID prevPropId,
-                long acceptedValue)
+                Transaction acceptedValue)
         {
             this();
             this.myId = myId;
             this.propID = propID;
             this.prevPropId = prevPropId;
             this.acceptedValue = acceptedValue;
-            setAcceptedValueIsSet(true);
         }
 
         /**
          * Performs a deep copy on <i>other</i>.
          */
         public promise_args(promise_args other) {
-            __isset_bitfield = other.__isset_bitfield;
             if (other.isSetMyId()) {
                 this.myId = other.myId;
             }
@@ -1685,7 +1581,9 @@ public class Ballot {
             if (other.isSetPrevPropId()) {
                 this.prevPropId = new ThriftProposalID(other.prevPropId);
             }
-            this.acceptedValue = other.acceptedValue;
+            if (other.isSetAcceptedValue()) {
+                this.acceptedValue = new Transaction(other.acceptedValue);
+            }
         }
 
         public promise_args deepCopy() {
@@ -1697,8 +1595,7 @@ public class Ballot {
             this.myId = null;
             this.propID = null;
             this.prevPropId = null;
-            setAcceptedValueIsSet(false);
-            this.acceptedValue = 0;
+            this.acceptedValue = null;
         }
 
         public String getMyId() {
@@ -1773,27 +1670,28 @@ public class Ballot {
             }
         }
 
-        public long getAcceptedValue() {
+        public Transaction getAcceptedValue() {
             return this.acceptedValue;
         }
 
-        public promise_args setAcceptedValue(long acceptedValue) {
+        public promise_args setAcceptedValue(Transaction acceptedValue) {
             this.acceptedValue = acceptedValue;
-            setAcceptedValueIsSet(true);
             return this;
         }
 
         public void unsetAcceptedValue() {
-            __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ACCEPTEDVALUE_ISSET_ID);
+            this.acceptedValue = null;
         }
 
         /** Returns true if field acceptedValue is set (has been assigned a value) and false otherwise */
         public boolean isSetAcceptedValue() {
-            return EncodingUtils.testBit(__isset_bitfield, __ACCEPTEDVALUE_ISSET_ID);
+            return this.acceptedValue != null;
         }
 
         public void setAcceptedValueIsSet(boolean value) {
-            __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ACCEPTEDVALUE_ISSET_ID, value);
+            if (!value) {
+                this.acceptedValue = null;
+            }
         }
 
         public void setFieldValue(_Fields field, Object value) {
@@ -1826,7 +1724,7 @@ public class Ballot {
                     if (value == null) {
                         unsetAcceptedValue();
                     } else {
-                        setAcceptedValue((Long)value);
+                        setAcceptedValue((Transaction)value);
                     }
                     break;
 
@@ -1845,7 +1743,7 @@ public class Ballot {
                     return getPrevPropId();
 
                 case ACCEPTED_VALUE:
-                    return Long.valueOf(getAcceptedValue());
+                    return getAcceptedValue();
 
             }
             throw new IllegalStateException();
@@ -1910,12 +1808,12 @@ public class Ballot {
                     return false;
             }
 
-            boolean this_present_acceptedValue = true;
-            boolean that_present_acceptedValue = true;
+            boolean this_present_acceptedValue = true && this.isSetAcceptedValue();
+            boolean that_present_acceptedValue = true && that.isSetAcceptedValue();
             if (this_present_acceptedValue || that_present_acceptedValue) {
                 if (!(this_present_acceptedValue && that_present_acceptedValue))
                     return false;
-                if (this.acceptedValue != that.acceptedValue)
+                if (!this.acceptedValue.equals(that.acceptedValue))
                     return false;
             }
 
@@ -1941,7 +1839,7 @@ public class Ballot {
             if (present_prevPropId)
                 list.add(prevPropId);
 
-            boolean present_acceptedValue = true;
+            boolean present_acceptedValue = true && (isSetAcceptedValue());
             list.add(present_acceptedValue);
             if (present_acceptedValue)
                 list.add(acceptedValue);
@@ -2042,7 +1940,11 @@ public class Ballot {
             first = false;
             if (!first) sb.append(", ");
             sb.append("acceptedValue:");
-            sb.append(this.acceptedValue);
+            if (this.acceptedValue == null) {
+                sb.append("null");
+            } else {
+                sb.append(this.acceptedValue);
+            }
             first = false;
             sb.append(")");
             return sb.toString();
@@ -2057,6 +1959,9 @@ public class Ballot {
             if (prevPropId != null) {
                 prevPropId.validate();
             }
+            if (acceptedValue != null) {
+                acceptedValue.validate();
+            }
         }
 
         private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -2069,8 +1974,6 @@ public class Ballot {
 
         private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
             try {
-                // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-                __isset_bitfield = 0;
                 read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
             } catch (org.apache.thrift.TException te) {
                 throw new java.io.IOException(te);
@@ -2122,8 +2025,9 @@ public class Ballot {
                             }
                             break;
                         case 4: // ACCEPTED_VALUE
-                            if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
-                                struct.acceptedValue = iprot.readI64();
+                            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                                struct.acceptedValue = new Transaction();
+                                struct.acceptedValue.read(iprot);
                                 struct.setAcceptedValueIsSet(true);
                             } else {
                                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -2159,9 +2063,11 @@ public class Ballot {
                     struct.prevPropId.write(oprot);
                     oprot.writeFieldEnd();
                 }
-                oprot.writeFieldBegin(ACCEPTED_VALUE_FIELD_DESC);
-                oprot.writeI64(struct.acceptedValue);
-                oprot.writeFieldEnd();
+                if (struct.acceptedValue != null) {
+                    oprot.writeFieldBegin(ACCEPTED_VALUE_FIELD_DESC);
+                    struct.acceptedValue.write(oprot);
+                    oprot.writeFieldEnd();
+                }
                 oprot.writeFieldStop();
                 oprot.writeStructEnd();
             }
@@ -2203,7 +2109,7 @@ public class Ballot {
                     struct.prevPropId.write(oprot);
                 }
                 if (struct.isSetAcceptedValue()) {
-                    oprot.writeI64(struct.acceptedValue);
+                    struct.acceptedValue.write(oprot);
                 }
             }
 
@@ -2226,7 +2132,8 @@ public class Ballot {
                     struct.setPrevPropIdIsSet(true);
                 }
                 if (incoming.get(3)) {
-                    struct.acceptedValue = iprot.readI64();
+                    struct.acceptedValue = new Transaction();
+                    struct.acceptedValue.read(iprot);
                     struct.setAcceptedValueIsSet(true);
                 }
             }
@@ -2239,7 +2146,7 @@ public class Ballot {
 
         private static final org.apache.thrift.protocol.TField MY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("myId", org.apache.thrift.protocol.TType.STRING, (short)1);
         private static final org.apache.thrift.protocol.TField PROP_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("propID", org.apache.thrift.protocol.TType.STRUCT, (short)2);
-        private static final org.apache.thrift.protocol.TField ACCEPTED_VALUE_FIELD_DESC = new org.apache.thrift.protocol.TField("acceptedValue", org.apache.thrift.protocol.TType.I64, (short)3);
+        private static final org.apache.thrift.protocol.TField ACCEPTED_VALUE_FIELD_DESC = new org.apache.thrift.protocol.TField("acceptedValue", org.apache.thrift.protocol.TType.STRUCT, (short)3);
 
         private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
         static {
@@ -2249,7 +2156,7 @@ public class Ballot {
 
         public String myId; // required
         public ThriftProposalID propID; // required
-        public long acceptedValue; // required
+        public Transaction acceptedValue; // required
 
         /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -2316,8 +2223,6 @@ public class Ballot {
         }
 
         // isset id assignments
-        private static final int __ACCEPTEDVALUE_ISSET_ID = 0;
-        private byte __isset_bitfield = 0;
         public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
         static {
             Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -2326,7 +2231,7 @@ public class Ballot {
             tmpMap.put(_Fields.PROP_ID, new org.apache.thrift.meta_data.FieldMetaData("propID", org.apache.thrift.TFieldRequirementType.DEFAULT,
                     new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ThriftProposalID.class)));
             tmpMap.put(_Fields.ACCEPTED_VALUE, new org.apache.thrift.meta_data.FieldMetaData("acceptedValue", org.apache.thrift.TFieldRequirementType.DEFAULT,
-                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64          , "int")));
+                    new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Transaction.class)));
             metaDataMap = Collections.unmodifiableMap(tmpMap);
             org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(accept_args.class, metaDataMap);
         }
@@ -2337,27 +2242,27 @@ public class Ballot {
         public accept_args(
                 String myId,
                 ThriftProposalID propID,
-                long acceptedValue)
+                Transaction acceptedValue)
         {
             this();
             this.myId = myId;
             this.propID = propID;
             this.acceptedValue = acceptedValue;
-            setAcceptedValueIsSet(true);
         }
 
         /**
          * Performs a deep copy on <i>other</i>.
          */
         public accept_args(accept_args other) {
-            __isset_bitfield = other.__isset_bitfield;
             if (other.isSetMyId()) {
                 this.myId = other.myId;
             }
             if (other.isSetPropID()) {
                 this.propID = new ThriftProposalID(other.propID);
             }
-            this.acceptedValue = other.acceptedValue;
+            if (other.isSetAcceptedValue()) {
+                this.acceptedValue = new Transaction(other.acceptedValue);
+            }
         }
 
         public accept_args deepCopy() {
@@ -2368,8 +2273,7 @@ public class Ballot {
         public void clear() {
             this.myId = null;
             this.propID = null;
-            setAcceptedValueIsSet(false);
-            this.acceptedValue = 0;
+            this.acceptedValue = null;
         }
 
         public String getMyId() {
@@ -2420,27 +2324,28 @@ public class Ballot {
             }
         }
 
-        public long getAcceptedValue() {
+        public Transaction getAcceptedValue() {
             return this.acceptedValue;
         }
 
-        public accept_args setAcceptedValue(long acceptedValue) {
+        public accept_args setAcceptedValue(Transaction acceptedValue) {
             this.acceptedValue = acceptedValue;
-            setAcceptedValueIsSet(true);
             return this;
         }
 
         public void unsetAcceptedValue() {
-            __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ACCEPTEDVALUE_ISSET_ID);
+            this.acceptedValue = null;
         }
 
         /** Returns true if field acceptedValue is set (has been assigned a value) and false otherwise */
         public boolean isSetAcceptedValue() {
-            return EncodingUtils.testBit(__isset_bitfield, __ACCEPTEDVALUE_ISSET_ID);
+            return this.acceptedValue != null;
         }
 
         public void setAcceptedValueIsSet(boolean value) {
-            __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ACCEPTEDVALUE_ISSET_ID, value);
+            if (!value) {
+                this.acceptedValue = null;
+            }
         }
 
         public void setFieldValue(_Fields field, Object value) {
@@ -2465,7 +2370,7 @@ public class Ballot {
                     if (value == null) {
                         unsetAcceptedValue();
                     } else {
-                        setAcceptedValue((Long)value);
+                        setAcceptedValue((Transaction)value);
                     }
                     break;
 
@@ -2481,7 +2386,7 @@ public class Ballot {
                     return getPropID();
 
                 case ACCEPTED_VALUE:
-                    return Long.valueOf(getAcceptedValue());
+                    return getAcceptedValue();
 
             }
             throw new IllegalStateException();
@@ -2535,12 +2440,12 @@ public class Ballot {
                     return false;
             }
 
-            boolean this_present_acceptedValue = true;
-            boolean that_present_acceptedValue = true;
+            boolean this_present_acceptedValue = true && this.isSetAcceptedValue();
+            boolean that_present_acceptedValue = true && that.isSetAcceptedValue();
             if (this_present_acceptedValue || that_present_acceptedValue) {
                 if (!(this_present_acceptedValue && that_present_acceptedValue))
                     return false;
-                if (this.acceptedValue != that.acceptedValue)
+                if (!this.acceptedValue.equals(that.acceptedValue))
                     return false;
             }
 
@@ -2561,7 +2466,7 @@ public class Ballot {
             if (present_propID)
                 list.add(propID);
 
-            boolean present_acceptedValue = true;
+            boolean present_acceptedValue = true && (isSetAcceptedValue());
             list.add(present_acceptedValue);
             if (present_acceptedValue)
                 list.add(acceptedValue);
@@ -2644,7 +2549,11 @@ public class Ballot {
             first = false;
             if (!first) sb.append(", ");
             sb.append("acceptedValue:");
-            sb.append(this.acceptedValue);
+            if (this.acceptedValue == null) {
+                sb.append("null");
+            } else {
+                sb.append(this.acceptedValue);
+            }
             first = false;
             sb.append(")");
             return sb.toString();
@@ -2655,6 +2564,9 @@ public class Ballot {
             // check for sub-struct validity
             if (propID != null) {
                 propID.validate();
+            }
+            if (acceptedValue != null) {
+                acceptedValue.validate();
             }
         }
 
@@ -2668,8 +2580,6 @@ public class Ballot {
 
         private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
             try {
-                // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-                __isset_bitfield = 0;
                 read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
             } catch (org.apache.thrift.TException te) {
                 throw new java.io.IOException(te);
@@ -2712,8 +2622,9 @@ public class Ballot {
                             }
                             break;
                         case 3: // ACCEPTED_VALUE
-                            if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
-                                struct.acceptedValue = iprot.readI64();
+                            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                                struct.acceptedValue = new Transaction();
+                                struct.acceptedValue.read(iprot);
                                 struct.setAcceptedValueIsSet(true);
                             } else {
                                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -2744,9 +2655,11 @@ public class Ballot {
                     struct.propID.write(oprot);
                     oprot.writeFieldEnd();
                 }
-                oprot.writeFieldBegin(ACCEPTED_VALUE_FIELD_DESC);
-                oprot.writeI64(struct.acceptedValue);
-                oprot.writeFieldEnd();
+                if (struct.acceptedValue != null) {
+                    oprot.writeFieldBegin(ACCEPTED_VALUE_FIELD_DESC);
+                    struct.acceptedValue.write(oprot);
+                    oprot.writeFieldEnd();
+                }
                 oprot.writeFieldStop();
                 oprot.writeStructEnd();
             }
@@ -2782,7 +2695,7 @@ public class Ballot {
                     struct.propID.write(oprot);
                 }
                 if (struct.isSetAcceptedValue()) {
-                    oprot.writeI64(struct.acceptedValue);
+                    struct.acceptedValue.write(oprot);
                 }
             }
 
@@ -2800,7 +2713,8 @@ public class Ballot {
                     struct.setPropIDIsSet(true);
                 }
                 if (incoming.get(2)) {
-                    struct.acceptedValue = iprot.readI64();
+                    struct.acceptedValue = new Transaction();
+                    struct.acceptedValue.read(iprot);
                     struct.setAcceptedValueIsSet(true);
                 }
             }
@@ -2813,7 +2727,7 @@ public class Ballot {
 
         private static final org.apache.thrift.protocol.TField MY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("myId", org.apache.thrift.protocol.TType.STRING, (short)1);
         private static final org.apache.thrift.protocol.TField PROP_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("propID", org.apache.thrift.protocol.TType.STRUCT, (short)2);
-        private static final org.apache.thrift.protocol.TField ACCEPTED_VALUE_FIELD_DESC = new org.apache.thrift.protocol.TField("acceptedValue", org.apache.thrift.protocol.TType.I64, (short)3);
+        private static final org.apache.thrift.protocol.TField ACCEPTED_VALUE_FIELD_DESC = new org.apache.thrift.protocol.TField("acceptedValue", org.apache.thrift.protocol.TType.STRUCT, (short)3);
 
         private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
         static {
@@ -2823,7 +2737,7 @@ public class Ballot {
 
         public String myId; // required
         public ThriftProposalID propID; // required
-        public long acceptedValue; // required
+        public Transaction acceptedValue; // required
 
         /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -2890,8 +2804,6 @@ public class Ballot {
         }
 
         // isset id assignments
-        private static final int __ACCEPTEDVALUE_ISSET_ID = 0;
-        private byte __isset_bitfield = 0;
         public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
         static {
             Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -2900,7 +2812,7 @@ public class Ballot {
             tmpMap.put(_Fields.PROP_ID, new org.apache.thrift.meta_data.FieldMetaData("propID", org.apache.thrift.TFieldRequirementType.DEFAULT,
                     new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ThriftProposalID.class)));
             tmpMap.put(_Fields.ACCEPTED_VALUE, new org.apache.thrift.meta_data.FieldMetaData("acceptedValue", org.apache.thrift.TFieldRequirementType.DEFAULT,
-                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64          , "int")));
+                    new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Transaction.class)));
             metaDataMap = Collections.unmodifiableMap(tmpMap);
             org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(accepted_args.class, metaDataMap);
         }
@@ -2911,27 +2823,27 @@ public class Ballot {
         public accepted_args(
                 String myId,
                 ThriftProposalID propID,
-                long acceptedValue)
+                Transaction acceptedValue)
         {
             this();
             this.myId = myId;
             this.propID = propID;
             this.acceptedValue = acceptedValue;
-            setAcceptedValueIsSet(true);
         }
 
         /**
          * Performs a deep copy on <i>other</i>.
          */
         public accepted_args(accepted_args other) {
-            __isset_bitfield = other.__isset_bitfield;
             if (other.isSetMyId()) {
                 this.myId = other.myId;
             }
             if (other.isSetPropID()) {
                 this.propID = new ThriftProposalID(other.propID);
             }
-            this.acceptedValue = other.acceptedValue;
+            if (other.isSetAcceptedValue()) {
+                this.acceptedValue = new Transaction(other.acceptedValue);
+            }
         }
 
         public accepted_args deepCopy() {
@@ -2942,8 +2854,7 @@ public class Ballot {
         public void clear() {
             this.myId = null;
             this.propID = null;
-            setAcceptedValueIsSet(false);
-            this.acceptedValue = 0;
+            this.acceptedValue = null;
         }
 
         public String getMyId() {
@@ -2994,27 +2905,28 @@ public class Ballot {
             }
         }
 
-        public long getAcceptedValue() {
+        public Transaction getAcceptedValue() {
             return this.acceptedValue;
         }
 
-        public accepted_args setAcceptedValue(long acceptedValue) {
+        public accepted_args setAcceptedValue(Transaction acceptedValue) {
             this.acceptedValue = acceptedValue;
-            setAcceptedValueIsSet(true);
             return this;
         }
 
         public void unsetAcceptedValue() {
-            __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ACCEPTEDVALUE_ISSET_ID);
+            this.acceptedValue = null;
         }
 
         /** Returns true if field acceptedValue is set (has been assigned a value) and false otherwise */
         public boolean isSetAcceptedValue() {
-            return EncodingUtils.testBit(__isset_bitfield, __ACCEPTEDVALUE_ISSET_ID);
+            return this.acceptedValue != null;
         }
 
         public void setAcceptedValueIsSet(boolean value) {
-            __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ACCEPTEDVALUE_ISSET_ID, value);
+            if (!value) {
+                this.acceptedValue = null;
+            }
         }
 
         public void setFieldValue(_Fields field, Object value) {
@@ -3039,7 +2951,7 @@ public class Ballot {
                     if (value == null) {
                         unsetAcceptedValue();
                     } else {
-                        setAcceptedValue((Long)value);
+                        setAcceptedValue((Transaction)value);
                     }
                     break;
 
@@ -3055,7 +2967,7 @@ public class Ballot {
                     return getPropID();
 
                 case ACCEPTED_VALUE:
-                    return Long.valueOf(getAcceptedValue());
+                    return getAcceptedValue();
 
             }
             throw new IllegalStateException();
@@ -3109,12 +3021,12 @@ public class Ballot {
                     return false;
             }
 
-            boolean this_present_acceptedValue = true;
-            boolean that_present_acceptedValue = true;
+            boolean this_present_acceptedValue = true && this.isSetAcceptedValue();
+            boolean that_present_acceptedValue = true && that.isSetAcceptedValue();
             if (this_present_acceptedValue || that_present_acceptedValue) {
                 if (!(this_present_acceptedValue && that_present_acceptedValue))
                     return false;
-                if (this.acceptedValue != that.acceptedValue)
+                if (!this.acceptedValue.equals(that.acceptedValue))
                     return false;
             }
 
@@ -3135,7 +3047,7 @@ public class Ballot {
             if (present_propID)
                 list.add(propID);
 
-            boolean present_acceptedValue = true;
+            boolean present_acceptedValue = true && (isSetAcceptedValue());
             list.add(present_acceptedValue);
             if (present_acceptedValue)
                 list.add(acceptedValue);
@@ -3218,7 +3130,11 @@ public class Ballot {
             first = false;
             if (!first) sb.append(", ");
             sb.append("acceptedValue:");
-            sb.append(this.acceptedValue);
+            if (this.acceptedValue == null) {
+                sb.append("null");
+            } else {
+                sb.append(this.acceptedValue);
+            }
             first = false;
             sb.append(")");
             return sb.toString();
@@ -3229,6 +3145,9 @@ public class Ballot {
             // check for sub-struct validity
             if (propID != null) {
                 propID.validate();
+            }
+            if (acceptedValue != null) {
+                acceptedValue.validate();
             }
         }
 
@@ -3242,8 +3161,6 @@ public class Ballot {
 
         private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
             try {
-                // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-                __isset_bitfield = 0;
                 read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
             } catch (org.apache.thrift.TException te) {
                 throw new java.io.IOException(te);
@@ -3286,8 +3203,9 @@ public class Ballot {
                             }
                             break;
                         case 3: // ACCEPTED_VALUE
-                            if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
-                                struct.acceptedValue = iprot.readI64();
+                            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                                struct.acceptedValue = new Transaction();
+                                struct.acceptedValue.read(iprot);
                                 struct.setAcceptedValueIsSet(true);
                             } else {
                                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -3318,9 +3236,11 @@ public class Ballot {
                     struct.propID.write(oprot);
                     oprot.writeFieldEnd();
                 }
-                oprot.writeFieldBegin(ACCEPTED_VALUE_FIELD_DESC);
-                oprot.writeI64(struct.acceptedValue);
-                oprot.writeFieldEnd();
+                if (struct.acceptedValue != null) {
+                    oprot.writeFieldBegin(ACCEPTED_VALUE_FIELD_DESC);
+                    struct.acceptedValue.write(oprot);
+                    oprot.writeFieldEnd();
+                }
                 oprot.writeFieldStop();
                 oprot.writeStructEnd();
             }
@@ -3356,7 +3276,7 @@ public class Ballot {
                     struct.propID.write(oprot);
                 }
                 if (struct.isSetAcceptedValue()) {
-                    oprot.writeI64(struct.acceptedValue);
+                    struct.acceptedValue.write(oprot);
                 }
             }
 
@@ -3374,477 +3294,9 @@ public class Ballot {
                     struct.setPropIDIsSet(true);
                 }
                 if (incoming.get(2)) {
-                    struct.acceptedValue = iprot.readI64();
+                    struct.acceptedValue = new Transaction();
+                    struct.acceptedValue.read(iprot);
                     struct.setAcceptedValueIsSet(true);
-                }
-            }
-        }
-
-    }
-
-    public static class decide_args implements org.apache.thrift.TBase<decide_args, decide_args._Fields>, java.io.Serializable, Cloneable, Comparable<decide_args>   {
-        private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("decide_args");
-
-        private static final org.apache.thrift.protocol.TField PROP_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("propID", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-        private static final org.apache.thrift.protocol.TField VALUE_FIELD_DESC = new org.apache.thrift.protocol.TField("value", org.apache.thrift.protocol.TType.I64, (short)2);
-
-        private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
-        static {
-            schemes.put(StandardScheme.class, new decide_argsStandardSchemeFactory());
-            schemes.put(TupleScheme.class, new decide_argsTupleSchemeFactory());
-        }
-
-        public ThriftProposalID propID; // required
-        public long value; // required
-
-        /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-        public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-            PROP_ID((short)1, "propID"),
-            VALUE((short)2, "value");
-
-            private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
-
-            static {
-                for (_Fields field : EnumSet.allOf(_Fields.class)) {
-                    byName.put(field.getFieldName(), field);
-                }
-            }
-
-            /**
-             * Find the _Fields constant that matches fieldId, or null if its not found.
-             */
-            public static _Fields findByThriftId(int fieldId) {
-                switch(fieldId) {
-                    case 1: // PROP_ID
-                        return PROP_ID;
-                    case 2: // VALUE
-                        return VALUE;
-                    default:
-                        return null;
-                }
-            }
-
-            /**
-             * Find the _Fields constant that matches fieldId, throwing an exception
-             * if it is not found.
-             */
-            public static _Fields findByThriftIdOrThrow(int fieldId) {
-                _Fields fields = findByThriftId(fieldId);
-                if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-                return fields;
-            }
-
-            /**
-             * Find the _Fields constant that matches name, or null if its not found.
-             */
-            public static _Fields findByName(String name) {
-                return byName.get(name);
-            }
-
-            private final short _thriftId;
-            private final String _fieldName;
-
-            _Fields(short thriftId, String fieldName) {
-                _thriftId = thriftId;
-                _fieldName = fieldName;
-            }
-
-            public short getThriftFieldId() {
-                return _thriftId;
-            }
-
-            public String getFieldName() {
-                return _fieldName;
-            }
-        }
-
-        // isset id assignments
-        private static final int __VALUE_ISSET_ID = 0;
-        private byte __isset_bitfield = 0;
-        public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-        static {
-            Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-            tmpMap.put(_Fields.PROP_ID, new org.apache.thrift.meta_data.FieldMetaData("propID", org.apache.thrift.TFieldRequirementType.DEFAULT,
-                    new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ThriftProposalID.class)));
-            tmpMap.put(_Fields.VALUE, new org.apache.thrift.meta_data.FieldMetaData("value", org.apache.thrift.TFieldRequirementType.DEFAULT,
-                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64          , "int")));
-            metaDataMap = Collections.unmodifiableMap(tmpMap);
-            org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(decide_args.class, metaDataMap);
-        }
-
-        public decide_args() {
-        }
-
-        public decide_args(
-                ThriftProposalID propID,
-                long value)
-        {
-            this();
-            this.propID = propID;
-            this.value = value;
-            setValueIsSet(true);
-        }
-
-        /**
-         * Performs a deep copy on <i>other</i>.
-         */
-        public decide_args(decide_args other) {
-            __isset_bitfield = other.__isset_bitfield;
-            if (other.isSetPropID()) {
-                this.propID = new ThriftProposalID(other.propID);
-            }
-            this.value = other.value;
-        }
-
-        public decide_args deepCopy() {
-            return new decide_args(this);
-        }
-
-        @Override
-        public void clear() {
-            this.propID = null;
-            setValueIsSet(false);
-            this.value = 0;
-        }
-
-        public ThriftProposalID getPropID() {
-            return this.propID;
-        }
-
-        public decide_args setPropID(ThriftProposalID propID) {
-            this.propID = propID;
-            return this;
-        }
-
-        public void unsetPropID() {
-            this.propID = null;
-        }
-
-        /** Returns true if field propID is set (has been assigned a value) and false otherwise */
-        public boolean isSetPropID() {
-            return this.propID != null;
-        }
-
-        public void setPropIDIsSet(boolean value) {
-            if (!value) {
-                this.propID = null;
-            }
-        }
-
-        public long getValue() {
-            return this.value;
-        }
-
-        public decide_args setValue(long value) {
-            this.value = value;
-            setValueIsSet(true);
-            return this;
-        }
-
-        public void unsetValue() {
-            __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __VALUE_ISSET_ID);
-        }
-
-        /** Returns true if field value is set (has been assigned a value) and false otherwise */
-        public boolean isSetValue() {
-            return EncodingUtils.testBit(__isset_bitfield, __VALUE_ISSET_ID);
-        }
-
-        public void setValueIsSet(boolean value) {
-            __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __VALUE_ISSET_ID, value);
-        }
-
-        public void setFieldValue(_Fields field, Object value) {
-            switch (field) {
-                case PROP_ID:
-                    if (value == null) {
-                        unsetPropID();
-                    } else {
-                        setPropID((ThriftProposalID)value);
-                    }
-                    break;
-
-                case VALUE:
-                    if (value == null) {
-                        unsetValue();
-                    } else {
-                        setValue((Long)value);
-                    }
-                    break;
-
-            }
-        }
-
-        public Object getFieldValue(_Fields field) {
-            switch (field) {
-                case PROP_ID:
-                    return getPropID();
-
-                case VALUE:
-                    return Long.valueOf(getValue());
-
-            }
-            throw new IllegalStateException();
-        }
-
-        /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-        public boolean isSet(_Fields field) {
-            if (field == null) {
-                throw new IllegalArgumentException();
-            }
-
-            switch (field) {
-                case PROP_ID:
-                    return isSetPropID();
-                case VALUE:
-                    return isSetValue();
-            }
-            throw new IllegalStateException();
-        }
-
-        @Override
-        public boolean equals(Object that) {
-            if (that == null)
-                return false;
-            if (that instanceof decide_args)
-                return this.equals((decide_args)that);
-            return false;
-        }
-
-        public boolean equals(decide_args that) {
-            if (that == null)
-                return false;
-
-            boolean this_present_propID = true && this.isSetPropID();
-            boolean that_present_propID = true && that.isSetPropID();
-            if (this_present_propID || that_present_propID) {
-                if (!(this_present_propID && that_present_propID))
-                    return false;
-                if (!this.propID.equals(that.propID))
-                    return false;
-            }
-
-            boolean this_present_value = true;
-            boolean that_present_value = true;
-            if (this_present_value || that_present_value) {
-                if (!(this_present_value && that_present_value))
-                    return false;
-                if (this.value != that.value)
-                    return false;
-            }
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            List<Object> list = new ArrayList<Object>();
-
-            boolean present_propID = true && (isSetPropID());
-            list.add(present_propID);
-            if (present_propID)
-                list.add(propID);
-
-            boolean present_value = true;
-            list.add(present_value);
-            if (present_value)
-                list.add(value);
-
-            return list.hashCode();
-        }
-
-        @Override
-        public int compareTo(decide_args other) {
-            if (!getClass().equals(other.getClass())) {
-                return getClass().getName().compareTo(other.getClass().getName());
-            }
-
-            int lastComparison = 0;
-
-            lastComparison = Boolean.valueOf(isSetPropID()).compareTo(other.isSetPropID());
-            if (lastComparison != 0) {
-                return lastComparison;
-            }
-            if (isSetPropID()) {
-                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.propID, other.propID);
-                if (lastComparison != 0) {
-                    return lastComparison;
-                }
-            }
-            lastComparison = Boolean.valueOf(isSetValue()).compareTo(other.isSetValue());
-            if (lastComparison != 0) {
-                return lastComparison;
-            }
-            if (isSetValue()) {
-                lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.value, other.value);
-                if (lastComparison != 0) {
-                    return lastComparison;
-                }
-            }
-            return 0;
-        }
-
-        public _Fields fieldForId(int fieldId) {
-            return _Fields.findByThriftId(fieldId);
-        }
-
-        public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-            schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
-        }
-
-        public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-            schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder("decide_args(");
-            boolean first = true;
-
-            sb.append("propID:");
-            if (this.propID == null) {
-                sb.append("null");
-            } else {
-                sb.append(this.propID);
-            }
-            first = false;
-            if (!first) sb.append(", ");
-            sb.append("value:");
-            sb.append(this.value);
-            first = false;
-            sb.append(")");
-            return sb.toString();
-        }
-
-        public void validate() throws org.apache.thrift.TException {
-            // check for required fields
-            // check for sub-struct validity
-            if (propID != null) {
-                propID.validate();
-            }
-        }
-
-        private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-            try {
-                write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-            } catch (org.apache.thrift.TException te) {
-                throw new java.io.IOException(te);
-            }
-        }
-
-        private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-            try {
-                // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-                __isset_bitfield = 0;
-                read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-            } catch (org.apache.thrift.TException te) {
-                throw new java.io.IOException(te);
-            }
-        }
-
-        private static class decide_argsStandardSchemeFactory implements SchemeFactory {
-            public decide_argsStandardScheme getScheme() {
-                return new decide_argsStandardScheme();
-            }
-        }
-
-        private static class decide_argsStandardScheme extends StandardScheme<decide_args> {
-
-            public void read(org.apache.thrift.protocol.TProtocol iprot, decide_args struct) throws org.apache.thrift.TException {
-                org.apache.thrift.protocol.TField schemeField;
-                iprot.readStructBegin();
-                while (true)
-                {
-                    schemeField = iprot.readFieldBegin();
-                    if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
-                        break;
-                    }
-                    switch (schemeField.id) {
-                        case 1: // PROP_ID
-                            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                                struct.propID = new ThriftProposalID();
-                                struct.propID.read(iprot);
-                                struct.setPropIDIsSet(true);
-                            } else {
-                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-                            }
-                            break;
-                        case 2: // VALUE
-                            if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
-                                struct.value = iprot.readI64();
-                                struct.setValueIsSet(true);
-                            } else {
-                                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-                            }
-                            break;
-                        default:
-                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-                    }
-                    iprot.readFieldEnd();
-                }
-                iprot.readStructEnd();
-
-                // check for required fields of primitive type, which can't be checked in the validate method
-                struct.validate();
-            }
-
-            public void write(org.apache.thrift.protocol.TProtocol oprot, decide_args struct) throws org.apache.thrift.TException {
-                struct.validate();
-
-                oprot.writeStructBegin(STRUCT_DESC);
-                if (struct.propID != null) {
-                    oprot.writeFieldBegin(PROP_ID_FIELD_DESC);
-                    struct.propID.write(oprot);
-                    oprot.writeFieldEnd();
-                }
-                oprot.writeFieldBegin(VALUE_FIELD_DESC);
-                oprot.writeI64(struct.value);
-                oprot.writeFieldEnd();
-                oprot.writeFieldStop();
-                oprot.writeStructEnd();
-            }
-
-        }
-
-        private static class decide_argsTupleSchemeFactory implements SchemeFactory {
-            public decide_argsTupleScheme getScheme() {
-                return new decide_argsTupleScheme();
-            }
-        }
-
-        private static class decide_argsTupleScheme extends TupleScheme<decide_args> {
-
-            @Override
-            public void write(org.apache.thrift.protocol.TProtocol prot, decide_args struct) throws org.apache.thrift.TException {
-                TTupleProtocol oprot = (TTupleProtocol) prot;
-                BitSet optionals = new BitSet();
-                if (struct.isSetPropID()) {
-                    optionals.set(0);
-                }
-                if (struct.isSetValue()) {
-                    optionals.set(1);
-                }
-                oprot.writeBitSet(optionals, 2);
-                if (struct.isSetPropID()) {
-                    struct.propID.write(oprot);
-                }
-                if (struct.isSetValue()) {
-                    oprot.writeI64(struct.value);
-                }
-            }
-
-            @Override
-            public void read(org.apache.thrift.protocol.TProtocol prot, decide_args struct) throws org.apache.thrift.TException {
-                TTupleProtocol iprot = (TTupleProtocol) prot;
-                BitSet incoming = iprot.readBitSet(2);
-                if (incoming.get(0)) {
-                    struct.propID = new ThriftProposalID();
-                    struct.propID.read(iprot);
-                    struct.setPropIDIsSet(true);
-                }
-                if (incoming.get(1)) {
-                    struct.value = iprot.readI64();
-                    struct.setValueIsSet(true);
                 }
             }
         }
@@ -5487,7 +4939,7 @@ public class Ballot {
     public static class update_args implements org.apache.thrift.TBase<update_args, update_args._Fields>, java.io.Serializable, Cloneable, Comparable<update_args>   {
         private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("update_args");
 
-        private static final org.apache.thrift.protocol.TField LAST_ACCEPTED_BALLOT_FIELD_DESC = new org.apache.thrift.protocol.TField("lastAcceptedBallot", org.apache.thrift.protocol.TType.I64, (short)1);
+        private static final org.apache.thrift.protocol.TField LAST_ACCEPTED_BALLOT_FIELD_DESC = new org.apache.thrift.protocol.TField("lastAcceptedBallot", org.apache.thrift.protocol.TType.I32, (short)1);
 
         private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
         static {
@@ -5495,7 +4947,7 @@ public class Ballot {
             schemes.put(TupleScheme.class, new update_argsTupleSchemeFactory());
         }
 
-        public long lastAcceptedBallot; // required
+        public int lastAcceptedBallot; // required
 
         /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -5562,7 +5014,7 @@ public class Ballot {
         static {
             Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
             tmpMap.put(_Fields.LAST_ACCEPTED_BALLOT, new org.apache.thrift.meta_data.FieldMetaData("lastAcceptedBallot", org.apache.thrift.TFieldRequirementType.DEFAULT,
-                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64          , "int")));
+                    new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32          , "int")));
             metaDataMap = Collections.unmodifiableMap(tmpMap);
             org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(update_args.class, metaDataMap);
         }
@@ -5571,7 +5023,7 @@ public class Ballot {
         }
 
         public update_args(
-                long lastAcceptedBallot)
+                int lastAcceptedBallot)
         {
             this();
             this.lastAcceptedBallot = lastAcceptedBallot;
@@ -5596,11 +5048,11 @@ public class Ballot {
             this.lastAcceptedBallot = 0;
         }
 
-        public long getLastAcceptedBallot() {
+        public int getLastAcceptedBallot() {
             return this.lastAcceptedBallot;
         }
 
-        public update_args setLastAcceptedBallot(long lastAcceptedBallot) {
+        public update_args setLastAcceptedBallot(int lastAcceptedBallot) {
             this.lastAcceptedBallot = lastAcceptedBallot;
             setLastAcceptedBallotIsSet(true);
             return this;
@@ -5625,7 +5077,7 @@ public class Ballot {
                     if (value == null) {
                         unsetLastAcceptedBallot();
                     } else {
-                        setLastAcceptedBallot((Long)value);
+                        setLastAcceptedBallot((Integer)value);
                     }
                     break;
 
@@ -5635,7 +5087,7 @@ public class Ballot {
         public Object getFieldValue(_Fields field) {
             switch (field) {
                 case LAST_ACCEPTED_BALLOT:
-                    return Long.valueOf(getLastAcceptedBallot());
+                    return Integer.valueOf(getLastAcceptedBallot());
 
             }
             throw new IllegalStateException();
@@ -5778,8 +5230,8 @@ public class Ballot {
                     }
                     switch (schemeField.id) {
                         case 1: // LAST_ACCEPTED_BALLOT
-                            if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
-                                struct.lastAcceptedBallot = iprot.readI64();
+                            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                                struct.lastAcceptedBallot = iprot.readI32();
                                 struct.setLastAcceptedBallotIsSet(true);
                             } else {
                                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -5801,7 +5253,7 @@ public class Ballot {
 
                 oprot.writeStructBegin(STRUCT_DESC);
                 oprot.writeFieldBegin(LAST_ACCEPTED_BALLOT_FIELD_DESC);
-                oprot.writeI64(struct.lastAcceptedBallot);
+                oprot.writeI32(struct.lastAcceptedBallot);
                 oprot.writeFieldEnd();
                 oprot.writeFieldStop();
                 oprot.writeStructEnd();
@@ -5826,7 +5278,7 @@ public class Ballot {
                 }
                 oprot.writeBitSet(optionals, 1);
                 if (struct.isSetLastAcceptedBallot()) {
-                    oprot.writeI64(struct.lastAcceptedBallot);
+                    oprot.writeI32(struct.lastAcceptedBallot);
                 }
             }
 
@@ -5835,7 +5287,7 @@ public class Ballot {
                 TTupleProtocol iprot = (TTupleProtocol) prot;
                 BitSet incoming = iprot.readBitSet(1);
                 if (incoming.get(0)) {
-                    struct.lastAcceptedBallot = iprot.readI64();
+                    struct.lastAcceptedBallot = iprot.readI32();
                     struct.setLastAcceptedBallotIsSet(true);
                 }
             }
@@ -5854,7 +5306,7 @@ public class Ballot {
             schemes.put(TupleScheme.class, new update_resultTupleSchemeFactory());
         }
 
-        public List<Long> success; // required
+        public List<Transaction> success; // required
 
         /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
         public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -5920,7 +5372,7 @@ public class Ballot {
             Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
             tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
                     new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
-                            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64              , "int"))));
+                            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Transaction.class))));
             metaDataMap = Collections.unmodifiableMap(tmpMap);
             org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(update_result.class, metaDataMap);
         }
@@ -5929,7 +5381,7 @@ public class Ballot {
         }
 
         public update_result(
-                List<Long> success)
+                List<Transaction> success)
         {
             this();
             this.success = success;
@@ -5940,9 +5392,9 @@ public class Ballot {
          */
         public update_result(update_result other) {
             if (other.isSetSuccess()) {
-                List<Long> __this__success = new ArrayList<Long>(other.success.size());
-                for (Long other_element : other.success) {
-                    __this__success.add(other_element);
+                List<Transaction> __this__success = new ArrayList<Transaction>(other.success.size());
+                for (Transaction other_element : other.success) {
+                    __this__success.add(new Transaction(other_element));
                 }
                 this.success = __this__success;
             }
@@ -5961,22 +5413,22 @@ public class Ballot {
             return (this.success == null) ? 0 : this.success.size();
         }
 
-        public java.util.Iterator<Long> getSuccessIterator() {
+        public java.util.Iterator<Transaction> getSuccessIterator() {
             return (this.success == null) ? null : this.success.iterator();
         }
 
-        public void addToSuccess(long elem) {
+        public void addToSuccess(Transaction elem) {
             if (this.success == null) {
-                this.success = new ArrayList<Long>();
+                this.success = new ArrayList<Transaction>();
             }
             this.success.add(elem);
         }
 
-        public List<Long> getSuccess() {
+        public List<Transaction> getSuccess() {
             return this.success;
         }
 
-        public update_result setSuccess(List<Long> success) {
+        public update_result setSuccess(List<Transaction> success) {
             this.success = success;
             return this;
         }
@@ -6002,7 +5454,7 @@ public class Ballot {
                     if (value == null) {
                         unsetSuccess();
                     } else {
-                        setSuccess((List<Long>)value);
+                        setSuccess((List<Transaction>)value);
                     }
                     break;
 
@@ -6160,11 +5612,12 @@ public class Ballot {
                             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                                 {
                                     org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
-                                    struct.success = new ArrayList<Long>(_list0.size);
-                                    long _elem1;
+                                    struct.success = new ArrayList<Transaction>(_list0.size);
+                                    Transaction _elem1;
                                     for (int _i2 = 0; _i2 < _list0.size; ++_i2)
                                     {
-                                        _elem1 = iprot.readI64();
+                                        _elem1 = new Transaction();
+                                        _elem1.read(iprot);
                                         struct.success.add(_elem1);
                                     }
                                     iprot.readListEnd();
@@ -6192,10 +5645,10 @@ public class Ballot {
                 if (struct.success != null) {
                     oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
                     {
-                        oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I64, struct.success.size()));
-                        for (long _iter3 : struct.success)
+                        oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.success.size()));
+                        for (Transaction _iter3 : struct.success)
                         {
-                            oprot.writeI64(_iter3);
+                            _iter3.write(oprot);
                         }
                         oprot.writeListEnd();
                     }
@@ -6226,9 +5679,9 @@ public class Ballot {
                 if (struct.isSetSuccess()) {
                     {
                         oprot.writeI32(struct.success.size());
-                        for (long _iter4 : struct.success)
+                        for (Transaction _iter4 : struct.success)
                         {
-                            oprot.writeI64(_iter4);
+                            _iter4.write(oprot);
                         }
                     }
                 }
@@ -6240,12 +5693,13 @@ public class Ballot {
                 BitSet incoming = iprot.readBitSet(1);
                 if (incoming.get(0)) {
                     {
-                        org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I64, iprot.readI32());
-                        struct.success = new ArrayList<Long>(_list5.size);
-                        long _elem6;
+                        org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+                        struct.success = new ArrayList<Transaction>(_list5.size);
+                        Transaction _elem6;
                         for (int _i7 = 0; _i7 < _list5.size; ++_i7)
                         {
-                            _elem6 = iprot.readI64();
+                            _elem6 = new Transaction();
+                            _elem6.read(iprot);
                             struct.success.add(_elem6);
                         }
                     }

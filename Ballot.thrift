@@ -1,11 +1,17 @@
 namespace java edu.ucsb.cs.thrift
 
-typedef i64 int
+typedef i32 int
 
 struct ThriftProposalID{
     1:int ballotNumber,
     2:string uid
 }
+
+struct Transaction{
+    1:int lineNumber,
+    2:int delta
+}
+
 
 service Ballot {
 
@@ -24,25 +30,22 @@ service Ballot {
      * 3. the previous Proposal
      * 4. promised value
      */
-    oneway void promise(1:string myId, 2:ThriftProposalID propID, 3:ThriftProposalID prevPropId, 4:int acceptedValue)
+    oneway void promise(1:string myId, 2:ThriftProposalID propID, 3:ThriftProposalID prevPropId, 4:Transaction acceptedValue)
 
     /* Accept
      *
      */
-    oneway void accept(1:string myId, 2:ThriftProposalID propID, 3:int acceptedValue)
+    oneway void accept(1:string myId, 2:ThriftProposalID propID, 3:Transaction acceptedValue)
 
     /* Accepted
      *
      */
-    oneway void accepted(1:string myId, 2:ThriftProposalID propID, 3:int acceptedValue)
-
-	// if accepted received from majority => onResolution
-    oneway void decide(1:ThriftProposalID propID, 2:int value)
+    oneway void accepted(1:string myId, 2:ThriftProposalID propID, 3:Transaction acceptedValue)
 
     oneway void prepareNACK(1:string myId, 2:ThriftProposalID propID, 3:ThriftProposalID promisedID)
     oneway void acceptNACK(1:string myId, 2:ThriftProposalID propID, 3:ThriftProposalID promisedID)
 
     oneway void heartbeat(1:string myId, 2:ThriftProposalID leaderPropID)
 
-    list<int> update(1:int lastAcceptedBallot)
+    list<Transaction> update(1:int lastAcceptedBallot)
 }

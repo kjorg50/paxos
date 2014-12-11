@@ -13,6 +13,7 @@ import java.util.Stack;
  * and the actual Paxos implementation.
  */
 public class PaxosHandler {
+    /*
     public static final int MAJORITY=2; // quorum size
 
     private int nodeNum;
@@ -115,4 +116,5 @@ public class PaxosHandler {
     public HeartbeatNode getNode() {
         return node;
     }
+    */
 }
