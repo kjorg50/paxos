@@ -40,10 +40,8 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
         this.executor = executor;
     }
 
-    public String getNodeUID(){ return nodeUID;
-    }
-    // TODO - read from file to determine what nodes to talk to?
-    // maybe use an ArrayList to store them?
+    public String getNodeUID(){ return nodeUID; }
+
     
     /* -----------------------------------------------
      *                   Essential
@@ -78,6 +76,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
                     transport.close();
                 } catch (TException x) {
+                    log.error("doSendPrepare: Error sending the prepare. See exception \n"+ x);
                     x.printStackTrace();
                 }
             }
@@ -117,6 +116,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
             transport.close();
         } catch (TException x) {
             x.printStackTrace();
+            log.error("sendPromise: Error sending the promise. See exception \n"+ x);
         }
         log.debug("sendPromise: Promise sent to " + proposerUID);
     }
@@ -140,7 +140,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
                 try {
                     TTransport transport;
-                    log.debug("sendAccept: sending to " + m.getAddress() );
+                    log.debug("sendAccept: sending to " + m.getAddress());
                     transport = new TSocket(m.getAddress(), m.getPort());
                     transport.open();
 
@@ -152,6 +152,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
                     transport.close();
                 } catch (TException x) {
                     x.printStackTrace();
+                    log.error("doSendAccept: Error sending the accept. See exception \n"+ x);
                 }
             }
         });
@@ -190,6 +191,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
                     transport.close();
                 } catch (TException x) {
                     x.printStackTrace();
+                    log.error("doSendAccepted: Error sending the accepted. See exception \n"+ x);
                 }
             }
         });
@@ -202,7 +204,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
      */
     public void onResolution(ProposalID proposalID, Object value){
 
-        log.debug("onResolution: proposalID" + proposalID + ", acceptedValue " + value);
+        log.debug("onResolution: proposalID " + proposalID + ", acceptedValue " + value + " have been decided! Yay Paxos!");
         // for address in list
         //      write to file
 
@@ -219,17 +221,55 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
     public void sendPrepareNACK(String proposerUID, ProposalID proposalID, ProposalID promisedID){
         // only send to proposerUID
         //      connection( proposerUID.recvPrepareNACK(proposerUID, proposalID, promisedID)
+        log.debug("sendPrepareNACK: proposerUID " + proposerUID + ", proposalID "+ proposalID + ", promisedID " + promisedID);
 
+        try {
+            TTransport transport;
+            Messenger m = conf.getOneMessenger(Integer.parseInt(proposerUID));
+            log.debug("sendPrepareNACK: sending to " + m.getAddress());
+            transport = new TSocket(m.getAddress(), m.getPort());
+            transport.open();
 
+            TProtocol protocol = new TBinaryProtocol(transport);
+            Ballot.Client client = new Ballot.Client(protocol);
 
-
-
+            client.prepareNACK(nodeUID,
+                    new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()),
+                    new ThriftProposalID(promisedID.getNumber(), promisedID.getUID())
+            );
+            transport.close();
+        } catch (TException x) {
+            x.printStackTrace();
+            log.error("sendPrepareNACK: Error sending the prepareNACK. See exception \n"+ x);
+        }
 
     }
 
     public void sendAcceptNACK(String proposerUID, ProposalID proposalID, ProposalID promisedID){
         // only send to proposerUID
         //      connection( proposerUID.recvAcceptNACK(proposerUID, proposalID, promisedID)
+        log.debug("sendAcceptNACK: proposerUID " + proposerUID + ", proposalID "+ proposalID + ", promisedID " + promisedID);
+
+        try {
+            TTransport transport;
+            Messenger m = conf.getOneMessenger(Integer.parseInt(proposerUID));
+            log.debug("sendAcceptNACK: sending to " + m.getAddress());
+            transport = new TSocket(m.getAddress(), m.getPort());
+            transport.open();
+
+            TProtocol protocol = new TBinaryProtocol(transport);
+            Ballot.Client client = new Ballot.Client(protocol);
+
+            client.acceptNACK(nodeUID,
+                    new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()),
+                    new ThriftProposalID(promisedID.getNumber(), promisedID.getUID())
+            );
+            transport.close();
+        } catch (TException x) {
+            x.printStackTrace();
+            log.error("sendAcceptNACK: Error sending the acceptNACK. See exception \n"+ x);
+        }
+
     }
 
     /**

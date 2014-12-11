@@ -171,6 +171,8 @@ public class HeartbeatNode extends PracticalNode {
 	@Override
 	public void receivePrepareNACK(String proposerUID, ProposalID proposalID,
 			ProposalID promisedID) {
+		log.debug("receivePrepareNACK: proposerUID " + proposerUID + ", proposal " + proposalID +
+				", promisedID " +promisedID);
 		super.receivePrepareNACK(proposerUID, proposalID, promisedID);
 		
 		if (acquiringLeadership)
@@ -180,6 +182,8 @@ public class HeartbeatNode extends PracticalNode {
 	@Override
 	public void receiveAcceptNACK(String proposerUID, ProposalID proposalID,
 			ProposalID promisedID) {
+		log.debug("receiveAcceptNACK: proposerUID " + proposerUID + ", proposal " + proposalID +
+				", promisedID " +promisedID);
 		super.receiveAcceptNACK(proposerUID, proposalID, promisedID);
 		
 		// if our proposal was NACKed, add the UID to the list

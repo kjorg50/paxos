@@ -65,12 +65,18 @@ public class BallotHandler implements Ballot.Iface{
 
     @Override
     public void prepareNACK(String myId, ThriftProposalID propID, ThriftProposalID promisedID) throws TException {
-
+        log.debug("prepareNACK: myId " + myId + ", propID " + propID + ", promisedID " + promisedID);
+        heartbeatNode.receivePrepareNACK(myId,
+                new ProposalID(propID.getBallotNumber(), propID.getUid()),
+                new ProposalID(promisedID.getBallotNumber(), promisedID.getUid()));
     }
 
     @Override
     public void acceptNACK(String myId, ThriftProposalID propID, ThriftProposalID promisedID) throws TException {
-
+        log.debug("acceptNACK: myId " + myId + ", propID " + propID + ", promisedID " + promisedID);
+        heartbeatNode.receiveAcceptNACK(myId,
+                new ProposalID(propID.getBallotNumber(), propID.getUid()),
+                new ProposalID(promisedID.getBallotNumber(), promisedID.getUid()));
     }
 
     @Override
