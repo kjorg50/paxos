@@ -209,7 +209,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
         //      write to file
 
         executor.enqueue((Transaction)value);
-
+        log.info("Transaction completed");
         // Add to log that this round of paxos has been resolved
         // "proposal number:" proposalID ", value:" value
     }

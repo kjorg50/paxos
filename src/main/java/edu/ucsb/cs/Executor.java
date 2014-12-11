@@ -33,14 +33,16 @@ public class Executor implements Runnable{
         }
         // read file and find out what is the last executed transaction
         lastExecuted = findLast();
+        log.debug("Executor: Inside the constructor");
     }
 
     public synchronized void  enqueue(Transaction t){
         pendingTransactions.add(t);
+        log.debug("enqueue: Added txn " + t);
     }
 
     public void run(){
-
+        log.debug("run: I am executing");
         try {
             while(true) {
                 try {
@@ -68,6 +70,7 @@ public class Executor implements Runnable{
         try {
             out = new PrintWriter(new BufferedWriter(new FileWriter(BANK_FILENAME, true)));
             out.println(t.getDelta());
+            log.debug("applyTransaction: Added value " + t.getDelta() + " to the log file" );
         } catch (IOException e) {
             log.error("applyTransaction: Exception writing the file." + e.getMessage());
         } finally {

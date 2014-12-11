@@ -21,6 +21,7 @@ public class Main {
     public static final int BALANCE = 3;
     public static final int FAIL = 4;
     public static final int UNFAIL = 5;
+    public static final int PRINT = 6;
     public static final int MAJORITY=2; //TODO quorum size
     public static String nodeNumber;
     private Log log = LogFactory.getLog(Main.class);
@@ -29,13 +30,14 @@ public class Main {
     private HeartbeatNode heartbeatNode;
     private Stack<Transaction> transactions;
     private Double balance;
+    private Executor executor;
 
 
 
 
     public void init(String nodeUID) {
         ExecutorService es = java.util.concurrent.Executors.newSingleThreadExecutor();
-        Executor executor = new Executor();
+        executor = new Executor();
         es.submit(executor);
 
         messenger = new PaxosMessengerImpl(nodeUID, executor);
@@ -45,7 +47,7 @@ public class Main {
 
         ThriftServer.startThriftServer(heartbeatNode, nodeNumber);
 
-        System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5 \n");
+        System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5\n Print \t\t 6\n");
         Scanner sc = new Scanner(System.in);
 
         while (true) {
@@ -56,11 +58,11 @@ public class Main {
                 switch (action) {
                     case DEPOSIT:
                         System.out.println("Type amount to deposit:");
-                        if (sc.hasNextDouble()) {
-                            Double amount = sc.nextDouble();
+                        if (sc.hasNextInt()) {
+                            Integer amount = sc.nextInt();
                             log.info("Depositing " + amount);
                             deposit(amount);
-                            log.info(amount + " deposited");
+                            // log.info(amount + " deposited");
 
                         } else {
                             System.out.println("Please behave.");
@@ -69,18 +71,18 @@ public class Main {
                         break;
                     case WITHDRAW:
                         System.out.println("Type amount to withdraw:");
-                        if (sc.hasNextDouble()) {
-                            Double amount = sc.nextDouble();
+                        if (sc.hasNextInt()) {
+                            Integer amount = sc.nextInt();
                             log.info("Withdrawing " + amount);
                             withdraw(amount);
-                            log.info(amount + " withdrawn");
+                            // log.info(amount + " withdrawn");
                         } else {
                             System.out.println("Please behave.");
                             sc.next();
                         }
                         break;
                     case BALANCE:
-                        System.out.printf("Your account balance is $%.2f\n", getBalance());
+                        System.out.printf("Your account balance is $%d\n", getBalance());
                         break;
                     case FAIL:
                         fail();
@@ -90,11 +92,14 @@ public class Main {
                         unfail();
                         System.out.println("Failure OFF");
                         break;
+                    case PRINT:
+                        print();
                     default:
                         System.out.println("Action not supported");
                         break;
                 }
-                System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5 \n");
+                System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5 \n" +
+                        " Print \t\t 6\n");
             } else {
                 System.out.println("Please behave.");
                 sc.next();
@@ -102,74 +107,37 @@ public class Main {
         }
     }
 
-    public void deposit(double amount){
-//        Transaction newTxn;
-//        if(transactions.empty()) {
-//            newTxn = new Transaction(0.0, amount);
-//        } else {
-//            Double prev = transactions.peek().getAmount();
-//            newTxn = new Transaction(prev, prev+amount);
-//        }
-        heartbeatNode.setProposal(new Transaction(1,42));
+    public void deposit(int amount){
+        Transaction transaction = new Transaction(executor.getLastExecuted(), amount);
+        heartbeatNode.setProposal(transaction);
         heartbeatNode.prepare(); // run paxos
-//
-//        while(!heartbeatNode.isComplete()){
-//            // timeout after certain amount?
-//            if(heartbeatNode.isComplete())
-//                break;
-//        }
-//        Transaction result = (Transaction)heartbeatNode.getFinalValue();
-//
-//        transactions.add(result);
-
-
-        //ThriftClient.callClient();
-        // TODO - add logging
-
         return;
     }
 
-    public void withdraw(double amount){
-//        Transaction newTxn;
-//        if(transactions.empty()) {
-//            newTxn = new Transaction(0.0, 12);
-//        } else {
-//            Double prev = transactions.peek().getAmount();
-//            newTxn = new Transaction(prev, prev-amount);
-//        }
-//        heartbeatNode.setProposal(newTxn);
-//        heartbeatNode.prepare(); // run paxos
-//
-//        while(!heartbeatNode.isComplete()){
-//            // timeout after certain amount?
-//            if(heartbeatNode.isComplete())
-//                break;
-//        }
-//        Transaction result = (Transaction)heartbeatNode.getFinalValue();
-//
-//        transactions.add(result);
-//
-//        // TODO - add logging
-//
-//        return;
+    public void withdraw(int amount){
+        Transaction transaction = new Transaction(executor.getLastExecuted(), -amount);
+        heartbeatNode.setProposal(transaction);
+        heartbeatNode.prepare(); // run paxos
+        return;
     }
 
-    public double getBalance(){
-//        // TODO - add logging
-        return 0;
+    public int getBalance(){
+       return executor.getBalance();
     }
 
     public void fail(){
         heartbeatNode.setActive(false);
-        // TODO - add logging
+        log.info("fail: Enter FAIL state");
     }
 
     public void unfail(){
         heartbeatNode.setActive(true);
-        // TODO - add logging
+        log.info("unfail: Exit FAIL state");
     }
 
-    // TODO - print()
+    public void print(){
+        executor.print();
+    }
 
     public static void main(String[] args){
         Main mainClass = new Main();
