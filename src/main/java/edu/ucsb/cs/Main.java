@@ -29,8 +29,7 @@ public class Main {
     //private PaxosMessengerImpl messenger;
     //private HeartbeatNode heartbeatNode;
 
-    private BallotHandler ballotHandler;
-
+    public static boolean FAILING = false;
 
     public void init(String nodeUID) {
         ExecutorService es = java.util.concurrent.Executors.newSingleThreadExecutor();
@@ -54,7 +53,6 @@ public class Main {
                         System.out.println("Type amount to deposit:");
                         if (sc.hasNextInt()) {
                             Integer amount = sc.nextInt();
-                            log.info("Depositing " + amount);
                             deposit(amount);
 
                         } else {
@@ -66,7 +64,6 @@ public class Main {
                         System.out.println("Type amount to withdraw:");
                         if (sc.hasNextInt()) {
                             Integer amount = sc.nextInt();
-                            log.info("Withdrawing " + amount);
                             withdraw(amount);
 
                         } else {
@@ -101,11 +98,17 @@ public class Main {
     }
 
     public void deposit(int amount){
-        startPaxos(amount);
+        if (!FAILING)
+            startPaxos(amount);
+        else
+            System.out.println("In FAIL state");
     }
 
     public void withdraw(int amount){
-        startPaxos(-1 * amount);
+        if (!FAILING)
+            startPaxos(-1 * amount);
+        else
+            System.out.println("In FAIL state");
     }
 
     private void startPaxos(int amount) {
@@ -127,12 +130,12 @@ public class Main {
     }
 
     public void fail(){
-        //heartbeatNode.setActive(false);
+        FAILING = true;
         log.info("fail: Enter FAIL state");
     }
 
     public void unfail(){
-        //heartbeatNode.setActive(true);
+        FAILING = false;
         log.info("unfail: Exit FAIL state");
     }
 
