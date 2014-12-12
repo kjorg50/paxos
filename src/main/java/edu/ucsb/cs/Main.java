@@ -24,28 +24,20 @@ public class Main {
     public static final int FAIL = 4;
     public static final int UNFAIL = 5;
     public static final int PRINT = 6;
-    public static final int MAJORITY=3; //TODO quorum size
     public static String nodeNumber;
     private Log log = LogFactory.getLog(Main.class);
-    public static PaxosHandler handler;
     //private PaxosMessengerImpl messenger;
     //private HeartbeatNode heartbeatNode;
-    private Stack<Transaction> transactions;
-    private Double balance;
-    //private Executor executor;
 
     private BallotHandler ballotHandler;
 
 
     public void init(String nodeUID) {
         ExecutorService es = java.util.concurrent.Executors.newSingleThreadExecutor();
-        //executor = new Executor(nodeUID);
         es.submit(Executor.getInstance());
 
         //messenger = new PaxosMessengerImpl(nodeUID, Executor.getInstance());
         //heartbeatNode = new HeartbeatNode(messenger,nodeUID,MAJORITY,null,1000,5000);
-        transactions = new Stack<Transaction>();
-        balance = 0.0;
 
         ThriftServer.startThriftServer(nodeNumber);
 

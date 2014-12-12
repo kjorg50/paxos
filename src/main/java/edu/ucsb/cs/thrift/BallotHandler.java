@@ -22,8 +22,6 @@ public class BallotHandler implements Ballot.Iface{
         ==============================================================
      */
 
-    public static final int MAJORITY = 2;
-
     @Override
     public void prepare(String myId, ThriftProposalID propID, String txnId) throws TException {
         log.debug("prepare: myId " + myId + ", propID " + propID);

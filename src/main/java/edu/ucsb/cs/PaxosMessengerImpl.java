@@ -36,22 +36,24 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
     private String txnId;
 
-    public PaxosMessengerImpl(String id, edu.ucsb.cs.Executor executor, String txnId){
+    public PaxosMessengerImpl(String id, edu.ucsb.cs.Executor executor, String txnId) {
         this.nodeUID = id;
         conf = new MessengerConf();
         this.executor = executor;
         this.txnId = txnId;
     }
 
-    public String getNodeUID(){ return nodeUID; }
+    public String getNodeUID() {
+        return nodeUID;
+    }
 
-    
+
     /* -----------------------------------------------
      *                   Essential
      * -----------------------------------------------
      */
-    public void sendPrepare(final ProposalID proposalID){
-        log.debug("sendPrepare: proposalID" + proposalID + ", txnId: "+ txnId);
+    public void sendPrepare(final ProposalID proposalID) {
+        log.debug("sendPrepare: proposalID" + proposalID + ", txnId: " + txnId);
         // for address in map
         //      connection( address.recvPrepare(nodeUID, proposalID) )
         for (int i = 0; i < conf.getMessengerConfigurations().size(); i++) {
@@ -67,18 +69,18 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
                 try {
                     TTransport transport;
                     Messenger oneMessenger = conf.getOneMessenger(i);
-                    log.debug("sendPrepare: sending to " + oneMessenger.getAddress() + ", txnId: "+ txnId);
+                    log.debug("sendPrepare: sending to " + oneMessenger.getAddress() + ", txnId: " + txnId);
                     transport = new TSocket(oneMessenger.getAddress(), oneMessenger.getPort());
                     transport.open();
 
                     TProtocol protocol = new TBinaryProtocol(transport);
                     Ballot.Client client = new Ballot.Client(protocol);
 
-                    client.prepare(nodeUID,new ThriftProposalID(proposalID.getNumber(),proposalID.getUID()), txnId);
+                    client.prepare(nodeUID, new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()), txnId);
 
                     transport.close();
                 } catch (TException x) {
-                    log.error("doSendPrepare: Error sending the prepare. See exception \n"+ x);
+                    log.error("doSendPrepare: Error sending the prepare. See exception \n" + x);
                     x.printStackTrace();
                 }
             }
@@ -86,9 +88,9 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
     }
 
     public void sendPromise(String proposerUID, ProposalID proposalID, ProposalID previousID,
-                            Object acceptedValue){
+                            Object acceptedValue) {
         log.debug("sendPromise: proposerUID " + proposerUID + ", proposalID " + proposalID + ", previousID " +
-                previousID + ", acceptedValue " + acceptedValue + ", txnId: "+ txnId);
+                previousID + ", acceptedValue " + acceptedValue + ", txnId: " + txnId);
         // only send to proposerUID
         //      connection( proposerUID.recvPromise( nodeID, proposalID, previousID, acceptedValue)
 
@@ -101,12 +103,12 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
             TProtocol protocol = new TBinaryProtocol(transport);
             Ballot.Client client = new Ballot.Client(protocol);
-            ThriftProposalID thriftPreviousID ;
+            ThriftProposalID thriftPreviousID;
 
-            if(previousID == null){
-                thriftPreviousID =  new ThriftProposalID(-1, "null");
-            } else{
-                thriftPreviousID  = new ThriftProposalID(previousID.getNumber(), previousID.getUID());
+            if (previousID == null) {
+                thriftPreviousID = new ThriftProposalID(-1, "null");
+            } else {
+                thriftPreviousID = new ThriftProposalID(previousID.getNumber(), previousID.getUID());
             }
 
 
@@ -126,8 +128,8 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
         log.debug("sendPromise: Promise sent to " + proposerUID);
     }
 
-    public void sendAccept(ProposalID proposalID, Object proposalValue){
-        log.debug("sendAccept: proposalID" + proposalID + ", proposalValue " + proposalValue + ", txnId: "+ txnId);
+    public void sendAccept(ProposalID proposalID, Object proposalValue) {
+        log.debug("sendAccept: proposalID" + proposalID + ", proposalValue " + proposalValue + ", txnId: " + txnId);
         // for address in list
         //      connection( address.recvAcceptRequest( nodeUID, proposalID, proposalValue)
 
@@ -145,7 +147,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
                 try {
                     TTransport transport;
-                    log.debug("sendAccept: sending to " + m.getAddress() + ", txnId: "+ txnId);
+                    log.debug("sendAccept: sending to " + m.getAddress() + ", txnId: " + txnId);
                     transport = new TSocket(m.getAddress(), m.getPort());
                     transport.open();
 
@@ -164,8 +166,8 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
     }
 
-    public void sendAccepted(ProposalID proposalID, Object acceptedValue){
-        log.debug("sendAccepted: proposalID" + proposalID + ", acceptedValue " + acceptedValue + ", txnId: "+ txnId);
+    public void sendAccepted(ProposalID proposalID, Object acceptedValue) {
+        log.debug("sendAccepted: proposalID" + proposalID + ", acceptedValue " + acceptedValue + ", txnId: " + txnId);
         // send to leader? or just broadcast to everyone?
         //      connection( address.recvAccepted( nodeUID, proposalID, acceptedValue)
 
@@ -184,7 +186,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
                 try {
                     TTransport transport;
-                    log.debug("sendAccepted: sending to " + m.getAddress() + ", txnId: "+ txnId);
+                    log.debug("sendAccepted: sending to " + m.getAddress() + ", txnId: " + txnId);
                     transport = new TSocket(m.getAddress(), m.getPort());
                     transport.open();
 
@@ -204,31 +206,28 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
     /**
      * Called when a node has received "accepted" messages from a majority
+     *
      * @param proposalID the proposal ID of the accepted proposal
-     * @param value the value of the accepted proposal
+     * @param value      the value of the accepted proposal
      */
-    public void onResolution(ProposalID proposalID, Object value){
+    public void onResolution(ProposalID proposalID, Object value) {
 
         log.debug("onResolution: proposalID " + proposalID + ", acceptedValue " + value +
-                " have been decided! Yay Paxos!" + ", txnId: "+ txnId);
-        // for address in list
-        //      write to file
+                " have been decided! Yay Paxos!" + ", txnId: " + txnId);
 
-        executor.enqueue((Transaction)value);
+        executor.enqueue((Transaction) value);
         log.info("Transaction completed");
-        // Add to log that this round of paxos has been resolved
-        // "proposal number:" proposalID ", value:" value
     }
 
     /* -----------------------------------------------
      *                   Practical
      * -----------------------------------------------
      */
-    public void sendPrepareNACK(String proposerUID, ProposalID proposalID, ProposalID promisedID){
+    public void sendPrepareNACK(String proposerUID, ProposalID proposalID, ProposalID promisedID) {
         // only send to proposerUID
         //      connection( proposerUID.recvPrepareNACK(proposerUID, proposalID, promisedID)
-        log.debug("sendPrepareNACK: proposerUID " + proposerUID + ", proposalID "+ proposalID +
-                ", promisedID " + promisedID + ", txnId: "+ txnId);
+        log.debug("sendPrepareNACK: proposerUID " + proposerUID + ", proposalID " + proposalID +
+                ", promisedID " + promisedID + ", txnId: " + txnId);
 
         try {
             TTransport transport;
@@ -247,16 +246,16 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
             transport.close();
         } catch (TException x) {
             x.printStackTrace();
-            log.error("sendPrepareNACK: Error sending the prepareNACK. See exception \n"+ x);
+            log.error("sendPrepareNACK: Error sending the prepareNACK. See exception \n" + x);
         }
 
     }
 
-    public void sendAcceptNACK(String proposerUID, ProposalID proposalID, ProposalID promisedID){
+    public void sendAcceptNACK(String proposerUID, ProposalID proposalID, ProposalID promisedID) {
         // only send to proposerUID
         //      connection( proposerUID.recvAcceptNACK(proposerUID, proposalID, promisedID)
-        log.debug("sendAcceptNACK: proposerUID " + proposerUID + ", proposalID "+ proposalID +
-                ", promisedID " + promisedID + ", txnId: "+ txnId);
+        log.debug("sendAcceptNACK: proposerUID " + proposerUID + ", proposalID " + proposalID +
+                ", promisedID " + promisedID + ", txnId: " + txnId);
 
         try {
             TTransport transport;
@@ -275,7 +274,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
             transport.close();
         } catch (TException x) {
             x.printStackTrace();
-            log.error("sendAcceptNACK: Error sending the acceptNACK. See exception \n"+ x);
+            log.error("sendAcceptNACK: Error sending the acceptNACK. See exception \n" + x);
         }
 
     }
@@ -284,35 +283,36 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
      * Called when a node has received "promise" messages from a majority.
      * This is simply used to record the history of leadership.
      */
-    public void onLeadershipAcquired(){
-        // Add to log the acquisition of leadership by nodeUID
+    public void onLeadershipAcquired() {
         log.debug("onLeadershipAcquired: " + nodeUID + " has become the leader");
     }
 
     /* -----------------------------------------------
-     *                   Heartbeat
+     *           Heartbeat (Not really used)
      * -----------------------------------------------
      */
+
     /**
      * Called from the pulse() function. Heartbeats are only send by the current leader
+     *
      * @param leaderProposalID the current proposal by the leader
      */
-    public void sendHeartbeat( ProposalID leaderProposalID){
+    public void sendHeartbeat(ProposalID leaderProposalID) {
         // for address in list
         //      connection( address.recvHeartbeat( nodeUID, proposalID)
     }
 
-    public void schedule(long millisecondDelay, HeartbeatCallback callback){
+    public void schedule(long millisecondDelay, HeartbeatCallback callback) {
         // call the callback function every millisecondDelay milliseconds
         //      callback.execute()
     }
 
-    public void onLeadershipLost(){
+    public void onLeadershipLost() {
         // record in log the loss of leadership by nodeUID
         log.debug("onLeadershipLost: " + nodeUID + " lost leadership");
     }
 
-    public void onLeadershipChange(String previousLeaderUID, String newLeaderUID){
+    public void onLeadershipChange(String previousLeaderUID, String newLeaderUID) {
         // record in log the change in leadership
         log.debug("onLeadershipChange: previousLeader " + previousLeaderUID + ", newLeader " + newLeaderUID);
     }
