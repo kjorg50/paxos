@@ -15,5 +15,5 @@ target/
 *.cer
 *.pem
 
-
+*~
 *.DS_Store
