@@ -86,6 +86,7 @@ public class Executor implements Runnable{
             out.println(t.getDelta());
             lastExecuted++;
             pendingTransactions.remove(t);
+            System.out.println("\n\n SUCCESS \n\n");
             log.debug("applyTransaction: Added value " + t.getDelta() + " to the log file");
         } catch (IOException e) {
             log.error("applyTransaction: Exception writing the file." + e.getMessage());
