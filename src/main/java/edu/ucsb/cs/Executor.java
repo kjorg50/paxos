@@ -143,6 +143,9 @@ public class Executor implements Runnable{
      * @param previous the line number of the last item in our log
      */
     public void recoverLog(int previous){
+        if (Main.FAILING) {
+            return;
+        }
         log.debug("recoverLog: My previous known log entry is line " + previous + ", recovering missing transactions...");
 
         for (int i = 0; i < conf.getMessengerConfigurations().size(); i++) {
@@ -187,6 +190,9 @@ public class Executor implements Runnable{
      */
     public List<Transaction> sendRecovery(int last){
         List<Transaction> missedTransactions = new ArrayList<Transaction>();
+        if (Main.FAILING) {
+            return missedTransactions;
+        }
         BufferedReader reader = null;
         String inputLine;
         int lineNum = 0;
