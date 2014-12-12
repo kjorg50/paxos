@@ -22,6 +22,7 @@ import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
+import org.apache.thrift.transport.TTransportException;
 
 /**
  * This class will handle the messaging between different nodes in the system
@@ -79,8 +80,10 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
                     client.prepare(nodeUID, new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()), txnId);
 
                     transport.close();
+                } catch (TTransportException ex) {
+                    log.error("doSendPrepare: Error sending the prepare. It is possible that the receiving node is not available");
                 } catch (TException x) {
-                    log.error("doSendPrepare: Error sending the prepare. See exception \n" + x);
+                    log.error("doSendPrepare: Error sending the prepare.");
                     x.printStackTrace();
                 }
             }
@@ -121,6 +124,8 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
                     txnId
             );
             transport.close();
+        } catch (TTransportException ex) {
+            log.error("sendPromise: Error sending the promise. It is possible that the receiving node is not available");
         } catch (TException x) {
             x.printStackTrace();
             log.error("sendPromise: Error sending the promise. See exception \n" + x);
@@ -157,6 +162,8 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
                     client.accept(nodeUID, new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()), proposalValue, txnId);
 
                     transport.close();
+                } catch (TTransportException ex) {
+                    log.error("doSendAccept: Error sending the accept. It is possible that the receiving node is not available");
                 } catch (TException x) {
                     x.printStackTrace();
                     log.error("doSendAccept: Error sending the accept. See exception \n" + x);
@@ -196,6 +203,8 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
                     client.accepted(nodeUID, new ThriftProposalID(proposalID.getNumber(), proposalID.getUID()), acceptedValue, txnId);
 
                     transport.close();
+                } catch (TTransportException ex) {
+                    log.error("doSendAccepted: Error sending the accepted. It is possible that the receiving node is not available");
                 } catch (TException x) {
                     x.printStackTrace();
                     log.error("doSendAccepted: Error sending the accepted. See exception \n" + x);
@@ -244,6 +253,8 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
                     new ThriftProposalID(promisedID.getNumber(), promisedID.getUID()), txnId
             );
             transport.close();
+        } catch (TTransportException ex) {
+            log.error("sendPrepareNACK: Error sending the prepareNACK. It is possible that the receiving node is not available");
         } catch (TException x) {
             x.printStackTrace();
             log.error("sendPrepareNACK: Error sending the prepareNACK. See exception \n" + x);
@@ -272,6 +283,8 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
                     new ThriftProposalID(promisedID.getNumber(), promisedID.getUID()), txnId
             );
             transport.close();
+        } catch (TTransportException ex) {
+            log.error("sendAcceptNACK: Error sending the acceptNACK. It is possible that the receiving node is not available");
         } catch (TException x) {
             x.printStackTrace();
             log.error("sendAcceptNACK: Error sending the acceptNACK. See exception \n" + x);
