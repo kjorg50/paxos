@@ -54,6 +54,9 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
      * -----------------------------------------------
      */
     public void sendPrepare(final ProposalID proposalID) {
+        if (Main.FAILING) {
+            return;
+        }
         log.debug("sendPrepare: proposalID" + proposalID + ", txnId: " + txnId);
         // for address in map
         //      connection( address.recvPrepare(nodeUID, proposalID) )
@@ -92,6 +95,9 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
     public void sendPromise(String proposerUID, ProposalID proposalID, ProposalID previousID,
                             Object acceptedValue) {
+        if (Main.FAILING) {
+            return;
+        }
         log.debug("sendPromise: proposerUID " + proposerUID + ", proposalID " + proposalID + ", previousID " +
                 previousID + ", acceptedValue " + acceptedValue + ", txnId: " + txnId);
         // only send to proposerUID
@@ -134,6 +140,9 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
     }
 
     public void sendAccept(ProposalID proposalID, Object proposalValue) {
+        if (Main.FAILING) {
+            return;
+        }
         log.debug("sendAccept: proposalID" + proposalID + ", proposalValue " + proposalValue + ", txnId: " + txnId);
         // for address in list
         //      connection( address.recvAcceptRequest( nodeUID, proposalID, proposalValue)
@@ -174,6 +183,9 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
     }
 
     public void sendAccepted(ProposalID proposalID, Object acceptedValue) {
+        if (Main.FAILING) {
+            return;
+        }
         log.debug("sendAccepted: proposalID" + proposalID + ", acceptedValue " + acceptedValue + ", txnId: " + txnId);
         // send to leader? or just broadcast to everyone?
         //      connection( address.recvAccepted( nodeUID, proposalID, acceptedValue)
@@ -220,7 +232,9 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
      * @param value      the value of the accepted proposal
      */
     public void onResolution(ProposalID proposalID, Object value) {
-
+        if (Main.FAILING) {
+            return;
+        }
         log.debug("onResolution: proposalID " + proposalID + ", acceptedValue " + value +
                 " have been decided! Yay Paxos!" + ", txnId: " + txnId);
 
@@ -233,6 +247,9 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
      * -----------------------------------------------
      */
     public void sendPrepareNACK(String proposerUID, ProposalID proposalID, ProposalID promisedID) {
+        if (Main.FAILING) {
+            return;
+        }
         // only send to proposerUID
         //      connection( proposerUID.recvPrepareNACK(proposerUID, proposalID, promisedID)
         log.debug("sendPrepareNACK: proposerUID " + proposerUID + ", proposalID " + proposalID +
@@ -263,6 +280,9 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
     }
 
     public void sendAcceptNACK(String proposerUID, ProposalID proposalID, ProposalID promisedID) {
+        if (Main.FAILING) {
+            return;
+        }
         // only send to proposerUID
         //      connection( proposerUID.recvAcceptNACK(proposerUID, proposalID, promisedID)
         log.debug("sendAcceptNACK: proposerUID " + proposerUID + ", proposalID " + proposalID +
