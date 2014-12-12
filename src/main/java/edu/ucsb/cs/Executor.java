@@ -166,7 +166,8 @@ public class Executor implements Runnable{
             missedTransactions = client.update(previous);
             log.debug("doRecoverLog: received " + missedTransactions.size() + " missed log entries from " + oneMessenger.getAddress());
             for( Transaction txn : missedTransactions){
-                enqueue(txn);
+                if (txn.getLineNumber() > lastExecuted)
+                    enqueue(txn);
             }
 
             transport.close();
