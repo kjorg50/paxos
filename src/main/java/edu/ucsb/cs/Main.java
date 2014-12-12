@@ -24,32 +24,21 @@ public class Main {
     public static final int FAIL = 4;
     public static final int UNFAIL = 5;
     public static final int PRINT = 6;
-    public static final int MAJORITY=3; //TODO quorum size
     public static String nodeNumber;
     private Log log = LogFactory.getLog(Main.class);
-    public static PaxosHandler handler;
-    //private PaxosMessengerImpl messenger;
-    //private HeartbeatNode heartbeatNode;
-    private Stack<Transaction> transactions;
-    private Double balance;
-    //private Executor executor;
 
-    private BallotHandler ballotHandler;
 
+    public static boolean FAILING = false;
 
     public void init(String nodeUID) {
         ExecutorService es = java.util.concurrent.Executors.newSingleThreadExecutor();
-        //executor = new Executor(nodeUID);
         es.submit(Executor.getInstance());
 
-        //messenger = new PaxosMessengerImpl(nodeUID, Executor.getInstance());
-        //heartbeatNode = new HeartbeatNode(messenger,nodeUID,MAJORITY,null,1000,5000);
-        transactions = new Stack<Transaction>();
-        balance = 0.0;
-
         ThriftServer.startThriftServer(nodeNumber);
+        log.info("init: Waking up this paxos node");
+        Executor.getInstance().recoverLog(Executor.getInstance().getLastExecuted());
 
-        System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5\n Print \t\t 6\n");
+        System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5\n Print \t\t\t 6\n");
         Scanner sc = new Scanner(System.in);
 
         while (true) {
@@ -62,7 +51,6 @@ public class Main {
                         System.out.println("Type amount to deposit:");
                         if (sc.hasNextInt()) {
                             Integer amount = sc.nextInt();
-                            log.info("Depositing " + amount);
                             deposit(amount);
 
                         } else {
@@ -74,7 +62,6 @@ public class Main {
                         System.out.println("Type amount to withdraw:");
                         if (sc.hasNextInt()) {
                             Integer amount = sc.nextInt();
-                            log.info("Withdrawing " + amount);
                             withdraw(amount);
 
                         } else {
@@ -100,7 +87,7 @@ public class Main {
                         break;
                 }
                 System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5 \n" +
-                        " Print \t\t 6\n");
+                        " Print \t\t\t 6\n");
             } else {
                 System.out.println("Please behave.");
                 sc.next();
@@ -109,11 +96,17 @@ public class Main {
     }
 
     public void deposit(int amount){
-        startPaxos(amount);
+        if (!FAILING)
+            startPaxos(amount);
+        else
+            System.out.println("In FAIL state");
     }
 
     public void withdraw(int amount){
-        startPaxos(-1 * amount);
+        if (!FAILING)
+            startPaxos(-1 * amount);
+        else
+            System.out.println("In FAIL state");
     }
 
     private void startPaxos(int amount) {
@@ -135,12 +128,13 @@ public class Main {
     }
 
     public void fail(){
-        //heartbeatNode.setActive(false);
+        FAILING = true;
         log.info("fail: Enter FAIL state");
     }
 
     public void unfail(){
-        //heartbeatNode.setActive(true);
+        FAILING = false;
+        Executor.getInstance().recoverLog(Executor.getInstance().getLastExecuted());
         log.info("unfail: Exit FAIL state");
     }
 

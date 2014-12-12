@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class HBNStore {
 
-    public static final int MAJORITY = 2;
+    public static final int MAJORITY = 3;
 
     private static final HBNStore instance = new HBNStore();
 
@@ -25,6 +25,13 @@ public class HBNStore {
         return instance;
     }
 
+    /**
+     * Get the HeartbeatNode object used for the given transaction ID. If there does not yet exist a HeartbeatMode for
+     * a given transaction ID, then this method will create one and put it in the map of nodes
+     * @param txnId the transaction ID that we are interested in
+     * @param nodeNumber the physical node number in our system
+     * @return A HeartbeatNode object that corresponds to txnId
+     */
     public HeartbeatNode getNode(String txnId, String nodeNumber) {
         HeartbeatNode node = nodes.get(txnId);
         if (node == null) {
