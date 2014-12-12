@@ -121,6 +121,8 @@ public class Main {
         HeartbeatNode hbn = HBNStore.getInstance().getNode(txnId, nodeNumber);
         hbn.setProposal(transaction);
         hbn.prepare(); // run paxos
+        System.out.println("Paxos was completed? " + hbn.isComplete());
+        System.out.println(hbn.isComplete() ? "SUCCESS" : "FAIL");
     }
 
     public int getBalance(){
