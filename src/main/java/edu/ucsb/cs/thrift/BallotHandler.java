@@ -93,6 +93,6 @@ public class BallotHandler implements Ballot.Iface{
 
     @Override
     public List<Transaction> update(int lastAcceptedBallot) throws TException {
-        return null;
+        return Executor.getInstance().sendRecovery(lastAcceptedBallot);
     }
 }

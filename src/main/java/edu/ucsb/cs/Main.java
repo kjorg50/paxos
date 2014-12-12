@@ -35,10 +35,9 @@ public class Main {
         ExecutorService es = java.util.concurrent.Executors.newSingleThreadExecutor();
         es.submit(Executor.getInstance());
 
-        //messenger = new PaxosMessengerImpl(nodeUID, Executor.getInstance());
-        //heartbeatNode = new HeartbeatNode(messenger,nodeUID,MAJORITY,null,1000,5000);
-
         ThriftServer.startThriftServer(nodeNumber);
+        log.info("init: Waking up this paxos node");
+        Executor.getInstance().recoverLog(Executor.getInstance().getLastExecuted());
 
         System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5\n Print \t\t\t 6\n");
         Scanner sc = new Scanner(System.in);
