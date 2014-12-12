@@ -1,6 +1,5 @@
 package edu.ucsb.cs;
 
-import edu.ucsb.cs.thrift.ThriftProposalID;
 import edu.ucsb.cs.thrift.Transaction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -8,8 +7,6 @@ import org.apache.commons.logging.LogFactory;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by nevena on 12/10/14.
@@ -39,12 +36,13 @@ public class Executor implements Runnable{
             out.close();
         }
         // read file and find out what is the last executed transaction
-        lastExecuted = findLast();
+        lastExecuted = getNumberOfLinesInFile();
         log.debug("Executor: Inside the constructor");
     }
 
-    public synchronized void  enqueue(Transaction t){
+    public synchronized void enqueue(Transaction t){
         pendingTransactions.add(t);
+        this.notifyAll();
         log.debug("enqueue: Added txn " + t);
     }
 
@@ -52,15 +50,16 @@ public class Executor implements Runnable{
         log.debug("run: I am executing");
         try {
             while(true) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                for (Transaction t : pendingTransactions) {
-                    if ((lastExecuted + 1) == t.getLineNumber()) {
-                        applyTransaction(t);
-                        break;
+                synchronized (this) {
+                    if (pendingTransactions.isEmpty()) {
+                        this.wait(500);
+                    } else {
+                        for (Transaction t : pendingTransactions) {
+                            if ((lastExecuted + 1) == t.getLineNumber()) {
+                                applyTransaction(t);
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -69,7 +68,7 @@ public class Executor implements Runnable{
         }
     }
 
-    private synchronized void applyTransaction(Transaction t) {
+    private void applyTransaction(Transaction t) {
         PrintWriter out = null;
         try {
             out = new PrintWriter(new BufferedWriter(new FileWriter(BANK_FILENAME, true)));
@@ -84,7 +83,7 @@ public class Executor implements Runnable{
         }
     }
 
-    public int getBalance(){
+    public synchronized int getBalance(){
         BufferedReader reader = null;
         String line;
         int balance = 0;
@@ -110,11 +109,21 @@ public class Executor implements Runnable{
         return balance;
     }
 
+    public synchronized int nextLineNumber() {
+        int last = getNumberOfLinesInFile();
+        for (Transaction t : pendingTransactions) {
+            if (t.getLineNumber() > last) {
+                last = t.getLineNumber();
+            }
+        }
+        return last + 1;
+    }
+
     public int getLastExecuted() {
         return lastExecuted;
     }
 
-    private int findLast(){
+    private int getNumberOfLinesInFile(){
         BufferedReader reader = null;
         int lines = 0;
         try {
@@ -125,15 +134,15 @@ public class Executor implements Runnable{
                 lines++;
             }
         } catch (IOException e) {
-            log.error("findLast: " + e.getMessage());
+            log.error("getNumberOfLinesInFile: " + e.getMessage());
         } finally {
             try {
                 reader.close();
             } catch (IOException e) {
-                log.error("findLast: " + e.getMessage());
+                log.error("getNumberOfLinesInFile: " + e.getMessage());
             }
         }
-        log.debug("&&& findLast: Lines in this file : " + lines);
+        log.debug("getNumberOfLinesInFile: Lines in this file : " + lines);
         return lines;
     }
 

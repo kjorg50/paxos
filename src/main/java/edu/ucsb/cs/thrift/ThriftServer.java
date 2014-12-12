@@ -44,10 +44,9 @@ public class ThriftServer {
 
     public static Ballot.Processor processor;
 
-    public static void startThriftServer(HeartbeatNode heartbeatNode, BallotHandler handler, final String nodeNumber) {
+    public static void startThriftServer(final String nodeNumber) {
         try {
-            //handler = new BallotHandler(heartbeatNode);
-            processor = new Ballot.Processor(handler);
+            processor = new Ballot.Processor(new BallotHandler());
             final MessengerConf conf = new MessengerConf();
 
             Runnable simple = new Runnable() {

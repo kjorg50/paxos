@@ -2,10 +2,7 @@ package edu.ucsb.cs.thrift;
 
 import cocagne.paxos.essential.ProposalID;
 import cocagne.paxos.functional.HeartbeatNode;
-import edu.ucsb.cs.Executor;
-import edu.ucsb.cs.Main;
-import edu.ucsb.cs.PaxosHandler;
-import edu.ucsb.cs.PaxosMessengerImpl;
+import edu.ucsb.cs.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.thrift.TException;
@@ -16,16 +13,9 @@ import java.util.List;
  * Created by kylejorgensen on 12/10/14.
  */
 public class BallotHandler implements Ballot.Iface{
-    public HeartbeatNode heartbeatNode;
+
     private Log log = LogFactory.getLog(BallotHandler.class);
 
-    public BallotHandler(HeartbeatNode _heartbeatNode){
-        heartbeatNode = _heartbeatNode;
-    }
-
-    public void setHeartbeatNode(HeartbeatNode hbn) {
-        this.heartbeatNode = hbn;
-    }
     /*
         ==============================================================
         Thrift methods' implementation
@@ -35,13 +25,9 @@ public class BallotHandler implements Ballot.Iface{
     public static final int MAJORITY = 2;
 
     @Override
-    public void prepare(String myId, ThriftProposalID propID) throws TException {
+    public void prepare(String myId, ThriftProposalID propID, String txnId) throws TException {
         log.debug("prepare: myId " + myId + ", propID " + propID);
-        PaxosMessengerImpl messenger = new PaxosMessengerImpl(Main.nodeNumber, Executor.getInstance());
-        if (!myId.equals(Main.nodeNumber)) {
-            HeartbeatNode hbn = new HeartbeatNode(messenger, Main.nodeNumber,MAJORITY,null,1000,5000);
-            this.heartbeatNode = hbn;
-        }
+        HeartbeatNode heartbeatNode = HBNStore.getInstance().getNode(txnId, Main.nodeNumber);
         heartbeatNode.receivePrepare(myId, new ProposalID(propID.getBallotNumber(), propID.getUid()));
     }
 
@@ -54,8 +40,10 @@ public class BallotHandler implements Ballot.Iface{
      * @throws TException
      */
     @Override
-    public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId, Transaction acceptedValue) throws TException {
+    public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId,
+                        Transaction acceptedValue, String txnId) throws TException {
         log.debug("promise: myId " + myId + ", propID " + propID + ", prevPropId " + prevPropId + ", acceptedValue " + acceptedValue);
+        HeartbeatNode heartbeatNode = HBNStore.getInstance().getNode(txnId, Main.nodeNumber);
         heartbeatNode.receivePromise(myId,
                 new ProposalID(propID.getBallotNumber(), propID.getUid()),
                 new ProposalID(prevPropId.getBallotNumber(), prevPropId.getUid()),
@@ -63,31 +51,38 @@ public class BallotHandler implements Ballot.Iface{
     }
 
     @Override
-    public void accept(String myId, ThriftProposalID propID, Transaction acceptedValue) throws TException {
+    public void accept(String myId, ThriftProposalID propID, Transaction acceptedValue, String txnId) throws TException {
         log.debug("accept: myId " + myId + ", propID " + propID + ", acceptedValue " + acceptedValue);
+        HeartbeatNode heartbeatNode = HBNStore.getInstance().getNode(txnId, Main.nodeNumber);
         heartbeatNode.receiveAcceptRequest(myId,
                 new ProposalID(propID.getBallotNumber(), propID.getUid()),
                 acceptedValue);
     }
 
     @Override
-    public void accepted(String myId, ThriftProposalID propID, Transaction acceptedValue) throws TException {
+    public void accepted(String myId, ThriftProposalID propID,
+                         Transaction acceptedValue, String txnId) throws TException {
         log.debug("accepted: myId " + myId + ", propID " + propID + ", acceptedValue " + acceptedValue);
+        HeartbeatNode heartbeatNode = HBNStore.getInstance().getNode(txnId, Main.nodeNumber);
         heartbeatNode.receiveAccepted(myId, new ProposalID(propID.getBallotNumber(), propID.getUid()), acceptedValue);
 
     }
 
     @Override
-    public void prepareNACK(String myId, ThriftProposalID propID, ThriftProposalID promisedID) throws TException {
+    public void prepareNACK(String myId, ThriftProposalID propID,
+                            ThriftProposalID promisedID, String txnId) throws TException {
         log.debug("prepareNACK: myId " + myId + ", propID " + propID + ", promisedID " + promisedID);
+        HeartbeatNode heartbeatNode = HBNStore.getInstance().getNode(txnId, Main.nodeNumber);
         heartbeatNode.receivePrepareNACK(myId,
                 new ProposalID(propID.getBallotNumber(), propID.getUid()),
                 new ProposalID(promisedID.getBallotNumber(), promisedID.getUid()));
     }
 
     @Override
-    public void acceptNACK(String myId, ThriftProposalID propID, ThriftProposalID promisedID) throws TException {
+    public void acceptNACK(String myId, ThriftProposalID propID,
+                           ThriftProposalID promisedID, String txnId) throws TException {
         log.debug("acceptNACK: myId " + myId + ", propID " + propID + ", promisedID " + promisedID);
+        HeartbeatNode heartbeatNode = HBNStore.getInstance().getNode(txnId, Main.nodeNumber);
         heartbeatNode.receiveAcceptNACK(myId,
                 new ProposalID(propID.getBallotNumber(), propID.getUid()),
                 new ProposalID(promisedID.getBallotNumber(), promisedID.getUid()));

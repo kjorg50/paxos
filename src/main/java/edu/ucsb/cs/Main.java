@@ -2,6 +2,7 @@ package edu.ucsb.cs;
 
 import java.util.Scanner;
 import java.util.Stack;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
 import cocagne.paxos.functional.HeartbeatNode;
@@ -27,8 +28,8 @@ public class Main {
     public static String nodeNumber;
     private Log log = LogFactory.getLog(Main.class);
     public static PaxosHandler handler;
-    private PaxosMessengerImpl messenger;
-    private HeartbeatNode heartbeatNode;
+    //private PaxosMessengerImpl messenger;
+    //private HeartbeatNode heartbeatNode;
     private Stack<Transaction> transactions;
     private Double balance;
     //private Executor executor;
@@ -41,14 +42,12 @@ public class Main {
         //executor = new Executor(nodeUID);
         es.submit(Executor.getInstance());
 
-        messenger = new PaxosMessengerImpl(nodeUID, Executor.getInstance());
-        heartbeatNode = new HeartbeatNode(messenger,nodeUID,MAJORITY,null,1000,5000);
+        //messenger = new PaxosMessengerImpl(nodeUID, Executor.getInstance());
+        //heartbeatNode = new HeartbeatNode(messenger,nodeUID,MAJORITY,null,1000,5000);
         transactions = new Stack<Transaction>();
         balance = 0.0;
 
-
-        this.ballotHandler = new BallotHandler(heartbeatNode);
-        ThriftServer.startThriftServer(heartbeatNode, ballotHandler, nodeNumber);
+        ThriftServer.startThriftServer(nodeNumber);
 
         System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5\n Print \t\t 6\n");
         Scanner sc = new Scanner(System.in);
@@ -119,10 +118,16 @@ public class Main {
     }
 
     private void startPaxos(int amount) {
+        int currentBal = Executor.getInstance().getBalance();
+        if (amount + currentBal < 0) {
+            System.out.println("Cannot fulfill request -- Balance: " + currentBal + "; Delta: " + amount);
+            return;
+        }
+        String txnId = "Txn_" + Executor.getInstance().nextLineNumber();
+        log.info("Starting txn: " + txnId);
         Transaction transaction = new Transaction(Executor.getInstance().getLastExecuted()+1, amount);
-        HeartbeatNode hbn = new HeartbeatNode(messenger,nodeNumber,MAJORITY,null,1000,5000);
+        HeartbeatNode hbn = HBNStore.getInstance().getNode(txnId, nodeNumber);
         hbn.setProposal(transaction);
-        this.ballotHandler.setHeartbeatNode(hbn);
         hbn.prepare(); // run paxos
     }
 
@@ -131,12 +136,12 @@ public class Main {
     }
 
     public void fail(){
-        heartbeatNode.setActive(false);
+        //heartbeatNode.setActive(false);
         log.info("fail: Enter FAIL state");
     }
 
     public void unfail(){
-        heartbeatNode.setActive(true);
+        //heartbeatNode.setActive(true);
         log.info("unfail: Exit FAIL state");
     }
 
