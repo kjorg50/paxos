@@ -26,8 +26,7 @@ public class Main {
     public static final int PRINT = 6;
     public static String nodeNumber;
     private Log log = LogFactory.getLog(Main.class);
-    //private PaxosMessengerImpl messenger;
-    //private HeartbeatNode heartbeatNode;
+
 
     public static boolean FAILING = false;
 
@@ -135,6 +134,7 @@ public class Main {
 
     public void unfail(){
         FAILING = false;
+        Executor.getInstance().recoverLog(Executor.getInstance().getLastExecuted());
         log.info("unfail: Exit FAIL state");
     }
 

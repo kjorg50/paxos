@@ -24,6 +24,9 @@ public class BallotHandler implements Ballot.Iface{
 
     @Override
     public void prepare(String myId, ThriftProposalID propID, String txnId) throws TException {
+        if (Main.FAILING) {
+            return;
+        }
         log.debug("prepare: myId " + myId + ", propID " + propID);
         HeartbeatNode heartbeatNode = HBNStore.getInstance().getNode(txnId, Main.nodeNumber);
         heartbeatNode.receivePrepare(myId, new ProposalID(propID.getBallotNumber(), propID.getUid()));
@@ -40,6 +43,9 @@ public class BallotHandler implements Ballot.Iface{
     @Override
     public void promise(String myId, ThriftProposalID propID, ThriftProposalID prevPropId,
                         Transaction acceptedValue, String txnId) throws TException {
+        if (Main.FAILING) {
+            return;
+        }
         log.debug("promise: myId " + myId + ", propID " + propID + ", prevPropId " + prevPropId + ", acceptedValue " + acceptedValue);
         HeartbeatNode heartbeatNode = HBNStore.getInstance().getNode(txnId, Main.nodeNumber);
         heartbeatNode.receivePromise(myId,
@@ -50,6 +56,9 @@ public class BallotHandler implements Ballot.Iface{
 
     @Override
     public void accept(String myId, ThriftProposalID propID, Transaction acceptedValue, String txnId) throws TException {
+        if (Main.FAILING) {
+            return;
+        }
         log.debug("accept: myId " + myId + ", propID " + propID + ", acceptedValue " + acceptedValue);
         HeartbeatNode heartbeatNode = HBNStore.getInstance().getNode(txnId, Main.nodeNumber);
         heartbeatNode.receiveAcceptRequest(myId,
@@ -60,6 +69,9 @@ public class BallotHandler implements Ballot.Iface{
     @Override
     public void accepted(String myId, ThriftProposalID propID,
                          Transaction acceptedValue, String txnId) throws TException {
+        if (Main.FAILING) {
+            return;
+        }
         log.debug("accepted: myId " + myId + ", propID " + propID + ", acceptedValue " + acceptedValue);
         HeartbeatNode heartbeatNode = HBNStore.getInstance().getNode(txnId, Main.nodeNumber);
         heartbeatNode.receiveAccepted(myId, new ProposalID(propID.getBallotNumber(), propID.getUid()), acceptedValue);
@@ -69,6 +81,9 @@ public class BallotHandler implements Ballot.Iface{
     @Override
     public void prepareNACK(String myId, ThriftProposalID propID,
                             ThriftProposalID promisedID, String txnId) throws TException {
+        if (Main.FAILING) {
+            return;
+        }
         log.debug("prepareNACK: myId " + myId + ", propID " + propID + ", promisedID " + promisedID);
         HeartbeatNode heartbeatNode = HBNStore.getInstance().getNode(txnId, Main.nodeNumber);
         heartbeatNode.receivePrepareNACK(myId,
@@ -79,6 +94,9 @@ public class BallotHandler implements Ballot.Iface{
     @Override
     public void acceptNACK(String myId, ThriftProposalID propID,
                            ThriftProposalID promisedID, String txnId) throws TException {
+        if (Main.FAILING) {
+            return;
+        }
         log.debug("acceptNACK: myId " + myId + ", propID " + propID + ", promisedID " + promisedID);
         HeartbeatNode heartbeatNode = HBNStore.getInstance().getNode(txnId, Main.nodeNumber);
         heartbeatNode.receiveAcceptNACK(myId,
