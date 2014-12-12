@@ -70,7 +70,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
                 try {
                     TTransport transport;
                     Messenger oneMessenger = conf.getOneMessenger(i);
-                    log.debug("sendPrepare: sending to " + oneMessenger.getAddress() + ", txnId: " + txnId);
+                    log.debug("doSendPrepare: sending to " + oneMessenger.getAddress() + ", txnId: " + txnId);
                     transport = new TSocket(oneMessenger.getAddress(), oneMessenger.getPort());
                     transport.open();
 
@@ -152,7 +152,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
                 try {
                     TTransport transport;
-                    log.debug("sendAccept: sending to " + m.getAddress() + ", txnId: " + txnId);
+                    log.debug("doSendAccept: sending to " + m.getAddress() + ", txnId: " + txnId);
                     transport = new TSocket(m.getAddress(), m.getPort());
                     transport.open();
 
@@ -193,7 +193,7 @@ public class PaxosMessengerImpl implements HeartbeatMessenger {
 
                 try {
                     TTransport transport;
-                    log.debug("sendAccepted: sending to " + m.getAddress() + ", txnId: " + txnId);
+                    log.debug("doSendAccepted: sending to " + m.getAddress() + ", txnId: " + txnId);
                     transport = new TSocket(m.getAddress(), m.getPort());
                     transport.open();
 

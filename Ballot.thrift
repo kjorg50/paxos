@@ -2,6 +2,7 @@ namespace java edu.ucsb.cs.thrift
 
 typedef i32 int
 
+/** ThriftProposalID == (int ballotNumber, string uid) **/
 struct ThriftProposalID{
     1:int ballotNumber,
     2:string uid
@@ -14,9 +15,6 @@ struct Transaction{
 
 
 service Ballot {
-
-    /** ThriftProposalID == (int ballotNumber, string uid) **/
-
 
     /* Prepare
      * 1. my node ID
