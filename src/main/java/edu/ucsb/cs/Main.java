@@ -64,7 +64,6 @@ public class Main {
                             Integer amount = sc.nextInt();
                             log.info("Depositing " + amount);
                             deposit(amount);
-                            // log.info(amount + " deposited");
 
                         } else {
                             System.out.println("Please behave.");
@@ -77,7 +76,7 @@ public class Main {
                             Integer amount = sc.nextInt();
                             log.info("Withdrawing " + amount);
                             withdraw(amount);
-                            // log.info(amount + " withdrawn");
+
                         } else {
                             System.out.println("Please behave.");
                             sc.next();
