@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class HBNStore {
 
-    public static final int MAJORITY = 2;
+    public static final int MAJORITY = 3;
 
     private static final HBNStore instance = new HBNStore();
 
