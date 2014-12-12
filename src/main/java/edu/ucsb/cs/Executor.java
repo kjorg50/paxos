@@ -109,6 +109,12 @@ public class Executor implements Runnable{
         return balance;
     }
 
+    /**
+     * Determine the next line number to be voted upon in our log. It not only checks the current log file, but also
+     * checks the pending transactions in the queue.
+     *
+     * @return the next open line number in the log
+     */
     public synchronized int nextLineNumber() {
         int last = getNumberOfLinesInFile();
         for (Transaction t : pendingTransactions) {
