@@ -41,7 +41,7 @@ public class Main {
 
         ThriftServer.startThriftServer(nodeNumber);
 
-        System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5\n Print \t\t 6\n");
+        System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5\n Print \t\t\t 6\n");
         Scanner sc = new Scanner(System.in);
 
         while (true) {
@@ -92,7 +92,7 @@ public class Main {
                         break;
                 }
                 System.out.println(" Deposit \t\t 1 \n Withdraw \t\t 2 \n Balance \t\t 3 \n Fail \t\t\t 4 \n Unfail \t\t 5 \n" +
-                        " Print \t\t 6\n");
+                        " Print \t\t\t 6\n");
             } else {
                 System.out.println("Please behave.");
                 sc.next();
