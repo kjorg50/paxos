@@ -1,6 +1,6 @@
 # Paxos
 
-Implementing a bank account management system that is replicated to many sites using the Paxos consensus protocol.
+Implementing a bank account management system that is replicated to many sites using the Paxos consensus protocol. It is configured to run on 5 different sites, thus agreement is needed by at least 3 nodes. 
 
 ## Usage
 1. `mvn clean install`
