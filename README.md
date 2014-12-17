@@ -13,3 +13,13 @@ mvn clean install
 cp src/main/recources/log4j.properties target/lib
 java -cp target/paxos-0.0.1.jar:target/lib/*:target/lib edu.ucsb.cs.Main
 ```
+
+## Scripts
+For clean startup
+```
+sh run.sh <node_num>
+```
+For restart only (keep old bank)
+```
+sh restart.sh <node_num>
+```
